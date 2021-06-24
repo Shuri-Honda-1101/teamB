@@ -1,6 +1,12 @@
 import logo from './logo.svg';
 import './App.css';
 import Catalog from '../Catalog'
+import {
+  BrowserRouter as Router, Switch, Route
+}
+  from "react-router-dom"
+import Edit from '../Edit';
+import Item from '../Item'
 
 function App() {
   return (
@@ -19,6 +25,13 @@ function App() {
           Learn React
         </a>
       </header>
+      <Router>
+        <Switch>
+          <Route exact path='/' component={Catalog} />
+          <Route exact path='/edit' component={Edit} />
+          <Route exact path='/item' component={Item} />
+        </Switch>
+      </Router>
     </div>
   );
 }
