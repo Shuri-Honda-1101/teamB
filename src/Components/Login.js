@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import firebase from '../config/firebase'
 
+
 const Login = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -55,3 +56,4 @@ const Login = () => {
 
 
 export default Login;
+
