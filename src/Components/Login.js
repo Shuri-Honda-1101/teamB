@@ -1,7 +1,9 @@
-import React from "react";
 
-const LonIn = () => {
-  return <div />;
-};
+import React from 'react'
 
-export default LonIn;
+const Login = () => {
+    return <div />
+}
+
+export default Login;
+
