@@ -5,21 +5,19 @@ export const SignUp = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(firebase);
-    firebase
+    const result = await firebase
       .auth()
       .createUserWithEmailAndPassword(email, password)
       .then(() => {
-        alert("アカウントの作成に成功しました");
+        return "成功";
       })
       .catch((err) => {
         console.log(err);
-        window.alert(
-          "アカウントの作成に失敗しました。入力内容を確認して下さい"
-        );
+        return "失敗";
       });
+    alert(`アカウントの作成に${result}しました`);
   };
 
   return (
