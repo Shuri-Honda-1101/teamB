@@ -1,10 +1,9 @@
-
 const Edit = () => {
-    return (
-        <div>
-
-        </div>
-    )
+  return (
+    <div>
+      <h1>ここはEditコンポーネントです</h1>
+    </div>
+  );
 };
 
-export default Edit
+export default Edit;
