@@ -1,14 +1,14 @@
 import logo from './logo.svg';
-import './App.css';
-import Catalog from '../Catalog'
 import {
   BrowserRouter as Router, Switch, Route
-}
-  from "react-router-dom"
-import Edit from '../Edit';
-import Item from '../Item'
+} from "react-router-dom";
+import Edit from './Components/Edit';
+import Item from './Components/Item';
+import Catalog from './Components/Catalog';
+import { SignUp } from "./Components/SignUp";
+import Login from "./Components/Login";
 
-function App() {
+const App = () => {
   return (
     <div className="App">
       <header className="App-header">
@@ -30,10 +30,12 @@ function App() {
           <Route exact path='/' component={Catalog} />
           <Route exact path='/edit' component={Edit} />
           <Route exact path='/item' component={Item} />
+          <Route exact path='/signup' component={SignUp} />
+          <Route exact path='/login' component={Login} />
         </Switch>
       </Router>
     </div>
   );
-}
+};
 
 export default App;
