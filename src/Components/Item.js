@@ -1,10 +1,9 @@
-
 const Item = () => {
-    return (
-        <div>
-
-        </div>
-    )
+  return (
+    <div>
+      <h1>ここはItemコンポーネントです</h1>
+    </div>
+  );
 };
 
-export default Item
+export default Item;

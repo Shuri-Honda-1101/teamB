@@ -1,11 +1,9 @@
-
-
 const Catalog = () => {
-    return (
-        <div>
+  return (
+    <div>
+      <h1>ここはCatalogコンポーネントです</h1>
+    </div>
+  );
+};
 
-        </div>
-    )
-}
-
-export default Catalog
+export default Catalog;
