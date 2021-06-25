@@ -1,3 +1,4 @@
+
 import logo from './logo.svg';
 import {
   BrowserRouter as Router, Switch, Route
@@ -35,6 +36,7 @@ const App = () => {
         </Switch>
       </Router>
     </div>
+
   );
 };
 
