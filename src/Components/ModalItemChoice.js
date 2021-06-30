@@ -1,11 +1,10 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import styled from "styled-components";
 import AllDrinkListItem from "./AllDrinkListItem";
 
 const ModalItemChoice = ({ drinks, setOpenModalItemChoice }) => {
   const [path, setPath] = useState(null);
-
-  console.log(path);
 
   return (
     <>
@@ -32,9 +31,13 @@ const ModalItemChoice = ({ drinks, setOpenModalItemChoice }) => {
                 );
               })}
           </ul>
-          <button>OK</button>
+          <Link to={`edit/${path}`}>
+            <button>OK</button>
+          </Link>
           <p>もしくは</p>
-          <button>新しく追加する</button>
+          <Link to="/edit/new">
+            <button>新しく追加する</button>
+          </Link>
         </SModalInner>
       </SModalWrap>
     </>
