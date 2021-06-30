@@ -3,9 +3,11 @@ import firebase from "../config/firebase";
 // import { AuthContext } from "../AuthServise";
 import { Link } from "react-router-dom";
 import DrinkItem from "./DrinkItem";
+import ModalItemChoice from "./ModalItemChoice";
 
 const Catalog = () => {
   const [drinks, setDrinks] = useState(null);
+  const [openModalItemChoice, setOpenModalItemChoice] = useState(false);
 
   // const user = useContext(AuthContext);
   const user = firebase.auth().currentUser;
@@ -28,24 +30,38 @@ const Catalog = () => {
   console.log(drinks);
 
   return (
-    <div>
-      <h1>ここはCatalogコンポーネントです</h1>
-      <Link to="/edit">新規メモ作成</Link>
-      <ul>
-        {drinks &&
-          drinks.map((drink) => {
-            return (
-              <DrinkItem
-                key={drink.id}
-                drink={drink.drink}
-                rate={drink.rate}
-                image={drink.image}
-                tags={drink.tags}
-              />
-            );
-          })}
-      </ul>
-    </div>
+    <>
+      {openModalItemChoice && (
+        <ModalItemChoice
+          drinks={drinks}
+          setOpenModalItemChoice={setOpenModalItemChoice}
+        />
+      )}
+      <div>
+        <h1>ここはCatalogコンポーネントです</h1>
+        <button
+          onClick={() => {
+            setOpenModalItemChoice(true);
+          }}
+        >
+          新規メモ作成
+        </button>
+        <ul>
+          {drinks &&
+            drinks.map((drink) => {
+              return (
+                <DrinkItem
+                  key={drink.id}
+                  drink={drink.drink}
+                  rate={drink.rate}
+                  image={drink.image}
+                  tags={drink.tags}
+                />
+              );
+            })}
+        </ul>
+      </div>
+    </>
   );
 };
 
