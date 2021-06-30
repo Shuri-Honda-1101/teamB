@@ -14,7 +14,6 @@ const Catalog = () => {
   //お酒リストを取ってくる処理
   useEffect(() => {
     if (user != null) {
-      console.log(user.uid);
       firebase
         .firestore()
         .collection(user.uid)
@@ -22,11 +21,24 @@ const Catalog = () => {
           const drinks = querySnapshot.docs.map((doc) => {
             return { ...doc.data(), id: doc.id };
           });
+          //お酒一覧をソートする処理
+          //①各お酒のdatesの配列を降順（最新順）にする
+          drinks.forEach((drink, i) => {
+            drink.dates.sort((a, b) => b - a);
+          });
+          //②各お酒の最新の日付を比較してお酒一覧を降順にする
+          drinks.sort((a, b) => {
+            if (a.dates[0] > b.dates[0]) {
+              return -1;
+            } else {
+              return 1;
+            }
+          });
+          //ソートしたものをセット
           setDrinks(drinks);
         });
     }
   }, [user]);
-  console.log(drinks);
 
   return (
     <>
