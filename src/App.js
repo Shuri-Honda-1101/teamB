@@ -1,4 +1,3 @@
-import logo from "./logo.svg";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import Edit from "./Components/Edit";
 import Item from "./Components/Item";
@@ -6,7 +5,10 @@ import Catalog from "./Components/Catalog";
 import { SignUp } from "./Components/SignUp";
 import Login from "./Components/Login";
 
+
+
 const App = () => {
+  
   return (
     <div>
       <Router>
