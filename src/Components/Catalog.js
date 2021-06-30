@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import firebase from "../config/firebase";
 // import { AuthContext } from "../AuthServise";
-import { Link } from "react-router-dom";
 import DrinkItem from "./DrinkItem";
 import ModalItemChoice from "./ModalItemChoice";
 

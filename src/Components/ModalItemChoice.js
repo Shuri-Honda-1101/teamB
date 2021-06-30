@@ -6,6 +6,16 @@ import AllDrinkListItem from "./AllDrinkListItem";
 const ModalItemChoice = ({ drinks, setOpenModalItemChoice }) => {
   const [path, setPath] = useState(null);
 
+  //   //OKクリック時の処理
+  //   //AuthProvider導入までhistoryが使えないためコメントアウト
+  //   const onClickPath = () => {
+  //     if (path !== null) {
+  //       history.push(`/edit/${path}`);
+  //     } else {
+  //       alert("お酒が選択されていません");
+  //     }
+  //   };
+
   return (
     <>
       <SModalWrap>
@@ -32,6 +42,7 @@ const ModalItemChoice = ({ drinks, setOpenModalItemChoice }) => {
               })}
           </ul>
           <Link to={`edit/${path}`}>
+            {/* <button onClick={onClickPath}>OK</button> */}
             <button>OK</button>
           </Link>
           <p>もしくは</p>
