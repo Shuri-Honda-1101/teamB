@@ -1,9 +1,52 @@
 import React, { useState } from 'react'
 import TagsList from './TagsList';
-const Edit = () => {
-  const [value, setValue] = useState('')
-  const [tags, setTags] = useState([]);
+import firebase, { storage } from "../config/firebase"
 
+const Edit = () => {
+  const [value, setValue] = useState('');
+  const [tags, setTags] = useState([]);
+  const [image, setImage] = useState('');
+  const [imageUrl, setImageUrl] = useState('');
+
+  const handleImage = (e) => {
+    const image = e.target.files[0]
+    setImage(image);
+  }
+
+  const onSubmit = (e) => {
+    e.preventDefault();
+    if(image === "") {
+      alert("ファイルが選択されていません")
+    }
+    const uploadTask = storage.ref(`/images/${image.name}`).put(image);
+    uploadTask.on(
+      firebase.storage.TaskEvent.STATE_CHANGED,
+      next,
+      error,
+      complete
+    );
+  }
+
+  const next = snapshot => {
+    const percent = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+    console.log(percent + "% done");
+    console.log(snapshot);
+  };
+  const error = error => {
+    console.log(error);
+  };
+
+  const complete = () => {
+    storage
+    .ref("images")
+    .child(image.name)
+    .getDownloadURL()
+    .then(firebaseUrl => {
+      setImageUrl(firebaseUrl);
+    })
+  }
+
+//タグの名前を入力
   const handleSubmit = (e) => {
     e.preventDefault();
     if(value==="") return;
@@ -18,15 +61,18 @@ console.log(tags)
   return (
     <>
     <h1>ここはEditコンポーネントです</h1>
-      
-    <form onSubmit ={handleSubmit}>
+      <form onSubmit ={onSubmit}>
         <div>
           <span>画像：</span>
           <input
             type="file"
             accept="image/*"
+            onChange={handleImage}
           />
+          <button>Upload</button>
         </div>
+      </form>
+      <img src={imageUrl} alt="uploaded"/>
         <div>
         　<span>レーティング：</span>
           <span>1</span>
@@ -41,6 +87,7 @@ console.log(tags)
           <input　type="radio" name="rating" value="5"/>
         </div>
           <TagsList tags={tags} />
+      <form onSubmit ={handleSubmit}>
           <div>
             <span>タグ：</span>
             <input 
