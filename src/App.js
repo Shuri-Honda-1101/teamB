@@ -4,11 +4,9 @@ import Item from "./Components/Item";
 import Catalog from "./Components/Catalog";
 import { SignUp } from "./Components/SignUp";
 import Login from "./Components/Login";
-
-
+import "antd/dist/antd.css";
 
 const App = () => {
-  
   return (
     <div>
       <Router>

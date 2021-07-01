@@ -3,10 +3,13 @@ import firebase from "../config/firebase";
 // import { AuthContext } from "../AuthServise";
 import DrinkItem from "./DrinkItem";
 import ModalItemChoice from "./ModalItemChoice";
+import { DatePicker, Space } from "antd";
 
 const Catalog = () => {
   const [drinks, setDrinks] = useState(null);
   const [openModalItemChoice, setOpenModalItemChoice] = useState(false);
+
+  const { RangePicker } = DatePicker;
 
   // const user = useContext(AuthContext);
   const user = firebase.auth().currentUser;
@@ -23,7 +26,7 @@ const Catalog = () => {
           });
           //お酒一覧をソートする処理
           //①各お酒のdatesの配列を降順（最新順）にする
-          drinks.forEach((drink, i) => {
+          drinks.forEach((drink) => {
             drink.dates.sort((a, b) => b - a);
           });
           //②各お酒の最新の日付を比較してお酒一覧を降順にする
@@ -42,6 +45,9 @@ const Catalog = () => {
 
   return (
     <>
+      <Space direction="vertical" size={12}>
+        <RangePicker />
+      </Space>
       {openModalItemChoice && (
         <ModalItemChoice
           drinks={drinks}
