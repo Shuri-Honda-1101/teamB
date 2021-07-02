@@ -5,7 +5,7 @@ import DrinkItem from "./DrinkItem";
 import ModalItemChoice from "./ModalItemChoice";
 import ModalRangePicker from "./ModalRangePicker";
 
-const Catalog = () => {
+const Catalog = ({ history }) => {
   const [drinks, setDrinks] = useState(null);
   const [openModalItemChoice, setOpenModalItemChoice] = useState(false);
   const [startDate, setStartDate] = useState(null);
@@ -93,6 +93,7 @@ const Catalog = () => {
         <ModalItemChoice
           drinks={drinks}
           setOpenModalItemChoice={setOpenModalItemChoice}
+          history={history}
         />
       )}
       <div>

@@ -3,18 +3,18 @@ import { Link } from "react-router-dom";
 import styled from "styled-components";
 import AllDrinkListItem from "./AllDrinkListItem";
 
-const ModalItemChoice = ({ drinks, setOpenModalItemChoice }) => {
+const ModalItemChoice = ({ drinks, setOpenModalItemChoice, history }) => {
   const [path, setPath] = useState(null);
 
-  //   //OKクリック時の処理
-  //   //AuthProvider導入までhistoryが使えないためコメントアウト
-  //   const onClickPath = () => {
-  //     if (path !== null) {
-  //       history.push(`/edit/${path}`);
-  //     } else {
-  //       alert("お酒が選択されていません");
-  //     }
-  //   };
+  //OKクリック時の処理
+  //AuthProvider導入までhistoryが使えないためコメントアウト
+  const onClickPath = () => {
+    if (path !== null) {
+      history.push(`/${path}`);
+    } else {
+      alert("お酒が選択されていません");
+    }
+  };
 
   return (
     <>
@@ -42,8 +42,8 @@ const ModalItemChoice = ({ drinks, setOpenModalItemChoice }) => {
               })}
           </ul>
           <Link to={`edit/${path}`}>
-            {/* <button onClick={onClickPath}>OK</button> */}
-            <button>OK</button>
+            <button onClick={onClickPath}>OK</button>
+            {/* <button>OK</button> */}
           </Link>
           <p>もしくは</p>
           <Link to="/edit/new">
