@@ -43,10 +43,9 @@ const ModalItemChoice = ({ drinks, setOpenModalItemChoice, history }) => {
           </ul>
           <Link to={`edit/${path}`}>
             <button onClick={onClickPath}>OK</button>
-            {/* <button>OK</button> */}
           </Link>
           <p>もしくは</p>
-          <Link to="/edit/new">
+          <Link to="/new">
             <button>新しく追加する</button>
           </Link>
         </SModalInner>
