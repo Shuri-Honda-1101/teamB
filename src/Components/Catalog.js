@@ -3,13 +3,17 @@ import firebase from "../config/firebase";
 // import { AuthContext } from "../AuthServise";
 import DrinkItem from "./DrinkItem";
 import ModalItemChoice from "./ModalItemChoice";
-import { DatePicker, Space } from "antd";
+import ModalRangePicker from "./ModalRangePicker";
 
 const Catalog = () => {
   const [drinks, setDrinks] = useState(null);
   const [openModalItemChoice, setOpenModalItemChoice] = useState(false);
+  const [startDate, setStartDate] = useState(null);
+  const [endDate, setEndDate] = useState(null);
+  const [focusedInput, setFocusedInput] = useState("startDate");
+  const [openModalRangePicker, setOpenModalRangePicker] = useState(false);
 
-  const { RangePicker } = DatePicker;
+  const dateFormat = "YYYY/MM/DD";
 
   // const user = useContext(AuthContext);
   const user = firebase.auth().currentUser;
@@ -45,9 +49,17 @@ const Catalog = () => {
 
   return (
     <>
-      <Space direction="vertical" size={12}>
-        <RangePicker />
-      </Space>
+      {openModalRangePicker && (
+        <ModalRangePicker
+          startDate={startDate}
+          setStartDate={setStartDate}
+          endDate={endDate}
+          setEndDate={setEndDate}
+          focusedInput={focusedInput}
+          setFocusedInput={setFocusedInput}
+          setOpenModalRangePicker={setOpenModalRangePicker}
+        />
+      )}
       {openModalItemChoice && (
         <ModalItemChoice
           drinks={drinks}
@@ -55,6 +67,17 @@ const Catalog = () => {
         />
       )}
       <div>
+        <input
+          label="react-dates"
+          value={
+            startDate && endDate
+              ? `${startDate.format(dateFormat)} ~ ${endDate.format(
+                  dateFormat
+                )}`
+              : "全ての期間"
+          }
+          onFocus={() => setOpenModalRangePicker(true)}
+        ></input>
         <h1>ここはCatalogコンポーネントです</h1>
         <button
           onClick={() => {
