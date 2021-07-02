@@ -1,9 +1,9 @@
-const TagsListItem = ({content}) => {
-    return (
-        <li>
-            <span>{content}</span>
-        </li>
-    )
-}
+const TagsListItem = ({ content }) => {
+  return (
+    <li>
+      <span>{content}</span>
+    </li>
+  );
+};
 
 export default TagsListItem;
