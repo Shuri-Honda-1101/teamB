@@ -123,6 +123,7 @@ const Catalog = ({ history }) => {
               return (
                 <DrinkItem
                   key={drink.id}
+                  id={drink.id}
                   drink={drink.drink}
                   rate={drink.rate}
                   image={drink.image}
