@@ -112,6 +112,19 @@ const Catalog = ({ history }) => {
         <h1>ここはCatalogコンポーネントです</h1>
         <button
           onClick={() => {
+            firebase
+              .auth()
+              .signOut()
+              .then(() => history.push("/login"))
+              .catch((err) => {
+                console.log(err);
+              });
+          }}
+        >
+          ログアウト
+        </button>
+        <button
+          onClick={() => {
             setOpenModalItemChoice(true);
           }}
         >

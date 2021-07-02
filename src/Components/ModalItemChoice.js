@@ -10,7 +10,7 @@ const ModalItemChoice = ({ drinks, setOpenModalItemChoice, history }) => {
   //AuthProvider導入までhistoryが使えないためコメントアウト
   const onClickPath = () => {
     if (path !== null) {
-      history.push(`/${path}`);
+      history.push(`/edit/${path}`);
     } else {
       alert("お酒が選択されていません");
     }
@@ -41,9 +41,7 @@ const ModalItemChoice = ({ drinks, setOpenModalItemChoice, history }) => {
                 );
               })}
           </ul>
-          <Link to={`edit/${path}`}>
-            <button onClick={onClickPath}>OK</button>
-          </Link>
+          <button onClick={onClickPath}>OK</button>
           <p>もしくは</p>
           <Link to="/new">
             <button>新しく追加する</button>
