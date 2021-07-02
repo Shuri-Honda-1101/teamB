@@ -112,6 +112,19 @@ const Catalog = ({ history }) => {
         <h1>ここはCatalogコンポーネントです</h1>
         <button
           onClick={() => {
+            firebase
+              .auth()
+              .signOut()
+              .then(() => history.push("/login"))
+              .catch((err) => {
+                console.log(err);
+              });
+          }}
+        >
+          ログアウト
+        </button>
+        <button
+          onClick={() => {
             setOpenModalItemChoice(true);
           }}
         >
@@ -123,6 +136,7 @@ const Catalog = ({ history }) => {
               return (
                 <DrinkItem
                   key={drink.id}
+                  id={drink.id}
                   drink={drink.drink}
                   rate={drink.rate}
                   image={drink.image}
