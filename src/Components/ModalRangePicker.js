@@ -2,7 +2,6 @@ import "react-dates/initialize";
 import { DayPickerRangeController } from "react-dates";
 import "react-dates/lib/css/_datepicker.css";
 import "moment/locale/ja"; // 日本語ローカライズ
-import moment from "moment";
 import styled from "styled-components";
 
 const ModalRangePicker = ({
