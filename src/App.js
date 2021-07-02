@@ -1,4 +1,3 @@
-//import logo from "./logo.svg";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import Edit from "./Components/Edit";
 import Item from "./Components/Item";
@@ -10,14 +9,18 @@ import { AuthProvider } from "./Components/AuthService"
 import LoggedInRoute from "./Components/LoggedInRoute";
 
 
+
+
 const App = () => {
+  
   return (
     <div>
+
       <AuthProvider>
         <Router>
           <Switch>
             <LoggedInRoute exact path="/" component={Catalog} />
-            <Route exact path="/edit" component={Edit} />
+            <Route exact path="/edit/:id" component={Edit} />
             <Route exact path="/item" component={Item} />
             <Route exact path="/signup" component={SignUp} />
             <Route exact path="/login" component={Login} />
