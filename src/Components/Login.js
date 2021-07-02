@@ -1,7 +1,7 @@
 import React, { useState, useContext } from "react";
 import firebase from "../config/firebase";
 import { AuthContext } from "./AuthService";
-import { Redirect } from "react-router"
+import { Redirect } from "react-router";
 
 const Login = ({ history }) => {
   const user = useContext(AuthContext);
@@ -9,7 +9,7 @@ const Login = ({ history }) => {
   const [password, setPassword] = useState("");
 
   if (user) {
-    return <Redirect to={"/"} />
+    return <Redirect to={`/user/${user.uid}`} />;
   }
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -17,12 +17,12 @@ const Login = ({ history }) => {
       .auth()
       .signInWithEmailAndPassword(email, password)
       .then(() => {
-        history.push("/")// "/に移動"
+        history.push(`/user/${user.uid}`);
       })
       .catch((err) => {
         console.log(err);
       });
-  }
+  };
   return (
     <>
       <h1>Login</h1>
@@ -56,8 +56,7 @@ const Login = ({ history }) => {
         <button type="submit">Login</button>
       </form>
     </>
-  );;
-}
-
+  );
+};
 
 export default Login;
