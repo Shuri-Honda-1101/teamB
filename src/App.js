@@ -9,10 +9,7 @@ import { AuthProvider } from "./Components/AuthService"
 import LoggedInRoute from "./Components/LoggedInRoute";
 
 
-
-
 const App = () => {
-  
   return (
     <div>
 
