@@ -12,6 +12,7 @@ const Catalog = ({ history }) => {
   const [endDate, setEndDate] = useState(null);
   const [focusedInput, setFocusedInput] = useState("startDate");
   const [openModalRangePicker, setOpenModalRangePicker] = useState(false);
+  const [userTags, setUserTags] = useState(null);
 
   const user = useContext(AuthContext);
 
@@ -19,7 +20,7 @@ const Catalog = ({ history }) => {
   const dateFormat = "YYYY/MM/DD";
 
   //お酒一覧をソートする処理を定義した関数
-  const sortDrink = (drinks) => {
+  const sortDrinks = (drinks) => {
     //①各お酒のdatesの配列を降順（最新順）にする
     drinks.forEach((drink) => {
       drink.dates.sort((a, b) => b - a);
@@ -53,13 +54,12 @@ const Catalog = ({ history }) => {
     return result;
   };
 
-  //お酒リストを取ってくる処理
+  //初回レンダリング時（及び依存配列の更新時）に行われる処理
   useEffect(() => {
     if (user != null) {
-      firebase
-        .firestore()
-        .collection("users")
-        .doc(user.uid)
+      //お酒一覧取得
+      const uidDB = firebase.firestore().collection("users").doc(user.uid);
+      uidDB
         .collection("drinks")
         // .collection(user.uid)
         .onSnapshot((querySnapshot) => {
@@ -71,13 +71,19 @@ const Catalog = ({ history }) => {
             drinks = rangeFilterDrinks(drinks, startDate, endDate);
           }
           //ソート
-          sortDrink(drinks);
+          sortDrinks(drinks);
           //ソートしたものをセット
           setDrinks(drinks);
         });
+      //ユーザータグ一覧取得
+      uidDB.collection("tags").onSnapshot((querySnapshot) => {
+        let tags = querySnapshot.docs.map((doc) => doc.data().tag);
+        setUserTags(tags);
+      });
     }
   }, [user, startDate, endDate]);
   console.log(drinks);
+  console.log(userTags);
 
   return (
     <>
