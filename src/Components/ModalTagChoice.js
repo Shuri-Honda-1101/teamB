@@ -1,9 +1,14 @@
 import styled from "styled-components";
 import UserTagListItem from "./UserTagListItem";
 
-const ModalTagChoice = ({ userTags, setOpenModalTagChoice }) => {
+const ModalTagChoice = ({
+  userTags,
+  setOpenModalTagChoice,
+  addFilterTagArray,
+}) => {
   const onClickOK = () => {
     setOpenModalTagChoice(false);
+    addFilterTagArray();
   };
   return (
     <>
@@ -11,7 +16,7 @@ const ModalTagChoice = ({ userTags, setOpenModalTagChoice }) => {
         <SModalInner>
           <ul>
             {userTags.map((tag) => {
-              return <UserTagListItem tag={tag.tag} key={tag.id} />;
+              return <UserTagListItem tag={tag} key={tag.id} />;
             })}
           </ul>
           <button onClick={onClickOK}>OK</button>
