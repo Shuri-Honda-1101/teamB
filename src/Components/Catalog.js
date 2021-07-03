@@ -58,7 +58,10 @@ const Catalog = ({ history }) => {
     if (user != null) {
       firebase
         .firestore()
-        .collection(user.uid)
+        .collection("users")
+        .doc(user.uid)
+        .collection("drinks")
+        // .collection(user.uid)
         .onSnapshot((querySnapshot) => {
           let drinks = querySnapshot.docs.map((doc) => {
             return { ...doc.data(), id: doc.id };
@@ -97,7 +100,7 @@ const Catalog = ({ history }) => {
         />
       )}
       <div>
-        {/* inputのままだと注意文が表示されるので、TextFieldなどに変更する */}
+        {/* inputのままだと注意文が表示されるので、TextFieldなどに変更する valueにonClick等をを噛ませていない事による注意文？*/}
         <input
           label="react-dates"
           value={
