@@ -4,6 +4,7 @@ import { AuthContext } from "./AuthService";
 import DrinkItem from "./DrinkItem";
 import ModalItemChoice from "./ModalItemChoice";
 import ModalRangePicker from "./ModalRangePicker";
+import ModalTagChoice from "./ModalTagChoice";
 
 const Catalog = ({ history }) => {
   const [drinks, setDrinks] = useState(null);
@@ -13,6 +14,7 @@ const Catalog = ({ history }) => {
   const [focusedInput, setFocusedInput] = useState("startDate");
   const [openModalRangePicker, setOpenModalRangePicker] = useState(false);
   const [userTags, setUserTags] = useState(null);
+  const [openModalTagChoice, setOpenModalTagChoice] = useState(false);
 
   const user = useContext(AuthContext);
 
@@ -77,7 +79,9 @@ const Catalog = ({ history }) => {
         });
       //ユーザータグ一覧取得
       uidDB.collection("tags").onSnapshot((querySnapshot) => {
-        let tags = querySnapshot.docs.map((doc) => doc.data().tag);
+        let tags = querySnapshot.docs.map((doc) => {
+          return { ...doc.data(), id: doc.id };
+        });
         setUserTags(tags);
       });
     }
@@ -87,6 +91,12 @@ const Catalog = ({ history }) => {
 
   return (
     <>
+      {openModalTagChoice && (
+        <ModalTagChoice
+          setOpenModalTagChoice={setOpenModalTagChoice}
+          userTags={userTags}
+        />
+      )}
       {openModalRangePicker && (
         <ModalRangePicker
           startDate={startDate}
@@ -118,6 +128,13 @@ const Catalog = ({ history }) => {
           }
           onFocus={() => setOpenModalRangePicker(true)}
         ></input>
+        <button
+          onClick={() => {
+            setOpenModalTagChoice(true);
+          }}
+        >
+          タグで検索
+        </button>
         <h1>ここはCatalogコンポーネントです</h1>
         <button
           onClick={() => {
