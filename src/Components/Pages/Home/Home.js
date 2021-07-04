@@ -1,6 +1,6 @@
 import { useContext } from "react";
 import { Link, Redirect } from "react-router-dom";
-import { AuthContext } from "./AuthService";
+import { AuthContext } from "../../utility/AuthService";
 
 const Home = () => {
   const user = useContext(AuthContext);

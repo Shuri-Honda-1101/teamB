@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import TagsList from "./TagsList";
-import firebase, { storage } from "../config/firebase";
+import TagsList from "../../utility/TagsList";
+import firebase, { storage } from "../../../config/firebase";
 import { useParams } from "react-router-dom";
 
 const Edit = () => {
