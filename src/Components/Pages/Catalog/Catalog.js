@@ -1,10 +1,10 @@
 import { useContext, useEffect, useState } from "react";
-import firebase from "../config/firebase";
-import { AuthContext } from "./AuthService";
-import DrinkItem from "./DrinkItem";
-import ModalItemChoice from "./ModalItemChoice";
-import ModalRangePicker from "./ModalRangePicker";
-import ModalTagChoice from "./ModalTagChoice";
+import firebase from "../../../config/firebase";
+import { AuthContext } from "../../utility/AuthService";
+import DrinkItem from "./Components/DrinkItem";
+import ModalItemChoice from "./Components/ModalItemChoice";
+import ModalRangePicker from "./Components/ModalRangePicker";
+import ModalTagChoice from "../../utility/ModalTagChoice";
 
 const Catalog = ({ history }) => {
   const [drinks, setDrinks] = useState(null);

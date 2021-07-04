@@ -1,13 +1,13 @@
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
-import Edit from "./Components/Edit";
-import Item from "./Components/Item";
-import Catalog from "./Components/Catalog";
-import SignUp from "./Components/SignUp";
-import Login from "./Components/Login";
+import Edit from "./Components/Pages/Edit/Edit";
+import Item from "./Components/Pages/Item/Item";
+import Catalog from "./Components/Pages/Catalog/Catalog";
+import SignUp from "./Components/Pages/SignUp/SignUp";
+import Login from "./Components/Pages/LogIn/Login";
 // import firebase from "./config/firebase";
-import { AuthProvider } from "./Components/AuthService";
-import LoggedInRoute from "./Components/LoggedInRoute";
-import Home from "./Components/Home";
+import { AuthProvider } from "./Components/utility/AuthService";
+import LoggedInRoute from "./Components/utility/LoggedInRoute";
+import Home from "./Components/Pages/Home/Home";
 import reset from "styled-reset";
 import { createGlobalStyle } from "styled-components";
 
