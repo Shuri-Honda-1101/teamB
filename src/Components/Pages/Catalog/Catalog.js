@@ -16,6 +16,7 @@ const Catalog = ({ history }) => {
   const [userTags, setUserTags] = useState(null);
   const [openModalTagChoice, setOpenModalTagChoice] = useState(false);
   const [filterTagArray, setFilterTagArray] = useState([]);
+  const [allDrinks, setAllDrinks] = useState(null);
 
   const user = useContext(AuthContext);
 
@@ -79,6 +80,7 @@ const Catalog = ({ history }) => {
           let drinks = querySnapshot.docs.map((doc) => {
             return { ...doc.data(), id: doc.id };
           });
+          setAllDrinks(drinks);
           //範囲指定された時にフィルターをかけたものをdrinksに代入
           if (startDate && endDate) {
             drinks = rangeFilterDrinks(drinks, startDate, endDate);
@@ -133,7 +135,7 @@ const Catalog = ({ history }) => {
       )}
       {openModalItemChoice && (
         <ModalItemChoice
-          drinks={drinks}
+          drinks={allDrinks}
           setOpenModalItemChoice={setOpenModalItemChoice}
           history={history}
         />
