@@ -1,12 +1,16 @@
 import React, { useState } from "react";
 import TagsList from "./TagsList";
 import firebase, { storage } from "../config/firebase";
+import { useParams } from "react-router-dom";
 
 const Edit = () => {
   const [value, setValue] = useState("");
   const [tags, setTags] = useState([]);
   const [image, setImage] = useState("");
   const [imageUrl, setImageUrl] = useState("");
+
+  const did = useParams().id;
+  console.log(did);
 
   const handleImage = (e) => {
     const image = e.target.files[0];

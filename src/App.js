@@ -20,9 +20,13 @@ const App = () => {
           <Switch>
             <LoggedInRoute exact path="/user/:uid" component={Catalog} />
             <Route exact path="/" component={Home} />
-            <Route exact path="/new" component={Edit} />
-            <Route exact path="/edit/:id" component={Edit} />
-            <Route exact path="/user/:uid/items/:did" component={Item} />
+            <LoggedInRoute exact path="/new" component={Edit} />
+            <LoggedInRoute exact path="/edit/:id" component={Edit} />
+            <LoggedInRoute
+              exact
+              path="/user/:uid/items/:did"
+              component={Item}
+            />
             <Route exact path="/signup" component={SignUp} />
             <Route exact path="/login" component={Login} />
           </Switch>

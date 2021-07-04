@@ -19,13 +19,6 @@ const Catalog = ({ history }) => {
 
   const user = useContext(AuthContext);
 
-  const addFilterTagArray = () => {
-    const results = userTags.filter((userTag) => userTag.trigger === true);
-    const newResults = results.map((result) => result.tag);
-    setFilterTagArray(newResults);
-  };
-  console.log(filterTagArray);
-
   //react-datesの選択期間表示用
   const dateFormat = "YYYY/MM/DD";
 
@@ -110,6 +103,13 @@ const Catalog = ({ history }) => {
   }, [user, startDate, endDate, filterTagArray]);
   console.log(drinks);
   console.log(userTags);
+
+  //タグ絞り込み（ModalItemChoice）のOKを押した時の処理
+  const addFilterTagArray = () => {
+    const results = userTags.filter((userTag) => userTag.trigger === true);
+    const newResults = results.map((result) => result.tag);
+    setFilterTagArray(newResults);
+  };
 
   return (
     <>
