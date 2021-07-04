@@ -7,14 +7,43 @@ const Edit = () => {
   const [tags, setTags] = useState([]);
   const [image, setImage] = useState('');
   const [imageUrl, setImageUrl] = useState('');
+  const [rate, setRate] = useState(0);
+  const [name, setName] = useState('');
+  const [date, setDate] = useState('');
+  const [memo, setMemo] = useState('');
 
+
+  // const user = useContext(AuthContext);
+  const user = firebase.auth().currentUser;
+  const db = firebase.firestore();
+  // if(user !== null) {
+  //   const userRef = db.collection("users").doc(user.uid)
+  //   const docRef = userRef
+  //   .collection("drinks")
+  //   .add({
+  //     tags: tags,
+  //     image: image,
+  //     name: name,
+  //     rate: rate
+  //   })
+  //   .then(()=>{
+  //     console.log("Document successfully written!")
+  //   })
+  //   .catch((error)=> {
+  //     console.log("Error writing document: ",error)
+  //   })
+  // }
+
+
+  console.log(db)
+
+//画像をアップロード
   const handleImage = (e) => {
     const image = e.target.files[0]
     setImage(image);
   }
 
-  const onSubmit = (e) => {
-    e.preventDefault();
+  const uploadImage = () => {
     if(image === "") {
       alert("ファイルが選択されていません")
     }
@@ -42,12 +71,42 @@ const Edit = () => {
     .child(image.name)
     .getDownloadURL()
     .then(firebaseUrl => {
-      setImageUrl(firebaseUrl);
+     pushDrinks(firebaseUrl)
     })
+  }
+  const pushDrinks = (firebaseUrl) => {
+    if(user !== null) {
+      const userRef = db.collection("users").doc(user.uid)
+      
+      userRef
+      .collection("drinks")
+      .add({
+        tags: tags,
+        imageUrl: firebaseUrl,
+        name: name,
+        rate: rate
+      }).then((docRef)=>{
+        console.log("Document successfully written!")
+        docRef.collection("memos").add({
+          // date: date,
+          memo: memo
+        })
+      })
+      .catch((error)=> {
+        console.log("Error writing document: ",error)
+      })
+    }
+      
+    
+    
+  }
+  const handleRate = () => {
+    
+
   }
 
 //タグの名前を入力
-  const handleSubmit = (e) => {
+  const addTags = (e) => {
     e.preventDefault();
     if(value==="") return;
 
@@ -56,12 +115,37 @@ const Edit = () => {
       value
     ])
   }
+  
+  //メモを入力
+  const addMemo = () => {
+    // e.preventDefault()
+    if(value ==="") return;
 
+    setMemo(value)
+  }
+  //お酒の名前を入力
+  const drinkName = () => {
+    if(value === "") return;
+
+    setName(value)
+  }
+
+  const addDate = () => {
+    setDate(date);
+  }
+
+  const handleSubmit =(e)=>{
+    e.preventDefault()
+    uploadImage()
+    addMemo()
+    drinkName()
+    // addDate()
+  }
 console.log(tags)
   return (
     <>
     <h1>ここはEditコンポーネントです</h1>
-      <form onSubmit ={onSubmit}>
+    <form onSubmit={handleSubmit}>
         <div>
           <span>画像：</span>
           <input
@@ -69,10 +153,10 @@ console.log(tags)
             accept="image/*"
             onChange={handleImage}
           />
-          <button>Upload</button>
         </div>
-      </form>
+      
       <img src={imageUrl} alt="uploaded"/>
+      
         <div>
         　<span>レーティング：</span>
           <span>1</span>
@@ -86,8 +170,9 @@ console.log(tags)
           <span>5</span>
           <input　type="radio" name="rating" value="5"/>
         </div>
+      
           <TagsList tags={tags} />
-      <form onSubmit ={handleSubmit}>
+      
           <div>
             <span>タグ：</span>
             <input 
@@ -98,41 +183,50 @@ console.log(tags)
             }}
             />
             <button 
-            onClick={handleSubmit} 
+            onClick={addTags} 
             type="submit">タグを追加する</button>
           </div>  
-        
-        <div>
-          <span>お酒：</span>
-          <input
-            type="name"
-            name="name"
-            placeholder="お酒の名前"
-          />
-        </div>
+      
+          <div>
+            <span>お酒：</span>
+            <input
+              type="name"
+              name="name"
+              placeholder="お酒の名前"
+              onChange={(e)=>{
+                setValue(e.target.value)
+              }}
+            />
+          </div>
         <div>
           <span>日付：</span>
           <input
           　type="date"
             name="date"
             placeholder="日付"
+            onChange={addDate}
           />
         </div>
         <div>
           <span>メモ：</span>
           <textarea 
+          type="submit"
           rows="10"
           cols="40"
           placeholder ="メモ"
-          
+          onChange={(e)=>{
+            setValue(e.target.value)
+          }}
           />
           <div>
-            <button>
+            <button
+            type="submit">
               保存する
             </button>
           </div>
         </div>
-      </form>
+      
+    </form>
 
 
     </>
