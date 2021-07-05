@@ -3,12 +3,9 @@ import TagsList from "../../utility/TagsList";
 import firebase, { storage } from "../../../config/firebase";
 import { useParams } from "react-router-dom";
 import { AuthContext } from "../../utility/AuthService";
+import ModalTagChoice from "../../utility/ModalTagChoice";
 
 const Edit = ({ history }) => {
-  //分かりにくいのでvalue→tagTextに名前変えます(本田)
-  // const [value, setValue] = useState("");
-  const [tagText, setTagText] = useState("");
-  const [tags, setTags] = useState([]);
   const [image, setImage] = useState("");
   const [imageUrl, setImageUrl] = useState("");
   //０レートは無いため、デフォルト値は3にしておきます。レンダリング時に、3にチェックが入っている必要があるため、inputタグにcheckedを追加します（本田）
@@ -23,6 +20,9 @@ const Edit = ({ history }) => {
   const [memo, setMemo] = useState("");
   //お酒の名前入力の空欄防止に追加したstate（本田）
   const [nameText, setNameText] = useState("");
+  const [openModalTagChoice, setOpenModalTagChoice] = useState(false);
+  const [choiceTagArray, setChoiceTagArray] = useState(null);
+  const [newTagInput, setNewTagInput] = useState(false);
 
   //今後のタスクで必要な処理です。（本田）
   //didがundefinedの時は新規作成、IDが入っている時はお酒の名前とレートのデフォルト入力をfirestoreから取ってきた値にして、保存時にアップデート処理をしてください（本田）
@@ -39,6 +39,8 @@ const Edit = ({ history }) => {
   //   const image = e.target.files[0];
   //   setImage(image);
   // };
+
+  console.log(choiceTagArray);
 
   const next = (snapshot) => {
     const percent = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
@@ -78,7 +80,8 @@ const Edit = ({ history }) => {
     const uidDB = firebase.firestore().collection("users").doc(user.uid);
     const allTagsGet = await uidDB.collection("tags").get();
     const allTags = await allTagsGet.docs.map((doc) => doc.data().tag);
-    tags.forEach((tag) => {
+    //既存のタグ一覧に今回追加するタグが存在しない場合のみ、タグ一覧に追加する
+    choiceTagArray.forEach((tag) => {
       if (allTags.includes(tag) !== true) {
         uidDB.collection("tags").add({
           tag: tag,
@@ -94,7 +97,7 @@ const Edit = ({ history }) => {
       userRef
         .collection("drinks")
         .add({
-          tags: tags,
+          tags: choiceTagArray,
           image: firebaseUrl,
           drink: nameText,
           rate: rate,
@@ -122,16 +125,6 @@ const Edit = ({ history }) => {
 
   //rateのinputタグに入れました。（本田）
   // const handleRate = () => {};
-
-  //タグの名前を入力
-  // タグを送信して配列としてセットする
-  const addTags = (e) => {
-    e.preventDefault();
-    if (tagText === "") return;
-    setTags([...tags, tagText]);
-    // 追加後にタグ入力欄を空欄にします（本田）
-    setTagText("");
-  };
 
   //メモを入力
   //メモは空欄でも大丈夫なので、メモinputタグにまとめました（本田）
@@ -173,10 +166,17 @@ const Edit = ({ history }) => {
       // addDate()
     }
   };
-  console.log(tags);
 
   return (
     <>
+      {openModalTagChoice && (
+        <ModalTagChoice
+          user={user}
+          setOpenModalTagChoice={setOpenModalTagChoice}
+          setChoiceTagArray={setChoiceTagArray}
+          newTagInput={newTagInput}
+        />
+      )}
       <h1>ここはEditコンポーネントです</h1>
       <form onSubmit={handleSubmit}>
         <div>
@@ -197,12 +197,12 @@ const Edit = ({ history }) => {
 
         <div>
           　<span>レーティング：</span>
-          {/* onChengeを追加し、setRateします。 */}
+          {/* onChangeを追加し、setRateします。 */}
           <input
             type="radio"
             name="rating"
             value="1"
-            //onChengeでユーザーが変更するとrateに各valueが入ります（ここは１のタグなので１が入る）（本田）
+            //onChangeでユーザーが変更するとrateに各valueが入ります（ここは１のタグなので１が入る）（本田）
             //rateが１の時は、ここにcheckを入れておいてくださいねという指示をcheckedで出します。（初期値の反映のため）（本田）
             checked={rate === 1}
             onChange={(e) => setRate(Number(e.target.value))}
@@ -242,20 +242,17 @@ const Edit = ({ history }) => {
           <span>5</span>
         </div>
 
-        <TagsList tags={tags} />
-
         <div>
           <span>タグ：</span>
-          <input
-            name="name"
-            placeholder="タグ"
-            // 追加後に空欄にしたいため、valueを追加しました（本田）
-            value={tagText}
-            onChange={(e) => {
-              setTagText(e.target.value);
+          <TagsList tags={choiceTagArray} />
+
+          <button
+            type="button"
+            onClick={() => {
+              setOpenModalTagChoice(true);
+              setNewTagInput(true);
             }}
-          />
-          <button onClick={addTags} type="submit">
+          >
             タグを追加する
           </button>
         </div>

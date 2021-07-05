@@ -13,7 +13,6 @@ const Catalog = ({ history }) => {
   const [endDate, setEndDate] = useState(null);
   const [focusedInput, setFocusedInput] = useState("startDate");
   const [openModalRangePicker, setOpenModalRangePicker] = useState(false);
-  const [userTags, setUserTags] = useState(null);
   const [openModalTagChoice, setOpenModalTagChoice] = useState(false);
   const [filterTagArray, setFilterTagArray] = useState([]);
   const [allDrinks, setAllDrinks] = useState(null);
@@ -95,31 +94,30 @@ const Catalog = ({ history }) => {
           setDrinks(drinks);
         });
       //ユーザータグ一覧取得
-      uidDB.collection("tags").onSnapshot((querySnapshot) => {
-        let tags = querySnapshot.docs.map((doc) => {
-          return { ...doc.data(), id: doc.id, trigger: false };
-        });
-        setUserTags(tags);
-      });
+      // uidDB.collection("tags").onSnapshot((querySnapshot) => {
+      //   let tags = querySnapshot.docs.map((doc) => {
+      //     return { ...doc.data(), id: doc.id, trigger: false };
+      //   });
+      //   setUserTags(tags);
+      // });
     }
   }, [user, startDate, endDate, filterTagArray]);
   console.log(drinks);
-  console.log(userTags);
 
-  //タグ絞り込み（ModalItemChoice）のOKを押した時の処理
-  const addFilterTagArray = () => {
-    const results = userTags.filter((userTag) => userTag.trigger === true);
-    const newResults = results.map((result) => result.tag);
-    setFilterTagArray(newResults);
-  };
+  // //タグ絞り込み（ModalItemChoice）のOKを押した時の処理
+  // const addFilterTagArray = () => {
+  //   const results = userTags.filter((userTag) => userTag.trigger === true);
+  //   const newResults = results.map((result) => result.tag);
+  //   setFilterTagArray(newResults);
+  // };
 
   return (
     <>
       {openModalTagChoice && (
         <ModalTagChoice
           setOpenModalTagChoice={setOpenModalTagChoice}
-          userTags={userTags}
-          addFilterTagArray={addFilterTagArray}
+          user={user}
+          setChoiceTagArray={setFilterTagArray}
         />
       )}
       {openModalRangePicker && (
