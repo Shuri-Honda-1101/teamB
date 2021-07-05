@@ -11,9 +11,10 @@ const DrinkItem = ({ id, drink, rate, tags, image }) => {
         <p>レーティング: {rate}</p>
         <h3>タグ</h3>
         <ul>
-          {tags.map((tag) => {
-            return <li key={shortid.generate()}>{tag}</li>;
-          })}
+          {tags &&
+            tags.map((tag) => {
+              return <li key={shortid.generate()}>{tag}</li>;
+            })}
         </ul>
       </Link>
     </li>
