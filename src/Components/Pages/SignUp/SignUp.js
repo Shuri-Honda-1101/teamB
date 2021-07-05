@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import firebase from "../config/firebase";
+import firebase from "../../../config/firebase";
 
-export const SignUp = () => {
+const SignUp = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -54,4 +54,4 @@ export const SignUp = () => {
   );
 };
 
-// export default SignUp;
+export default SignUp;
