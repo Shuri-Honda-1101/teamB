@@ -14,6 +14,7 @@ const Edit = ({ history }) => {
   const inputImageRef = useRef(null);
   //０レートは無いため、デフォルト値は3にしておきます。レンダリング時に、3にチェックが入っている必要があるため、inputタグにcheckedを追加します（本田）
   const [rate, setRate] = useState(3);
+  //ここにプレビュー画像の初期値を入れます。存在する場合はその画像を、無い場合はimageDefaultを使うようにしてください
   const [previewImage, setPreviewImage] = useState(imageDefault);
   const [croppedImage, setCroppedImage] = useState(null);
 
@@ -60,9 +61,10 @@ const Edit = ({ history }) => {
   };
 
   const uploadImage = () => {
-    if (croppedImage === null) {
-      alert("ファイルが選択されていません");
+    if (previewImage === imageDefault) {
+      alert("画像ファイルが選択されていません");
     }
+    //croppedImage(トリミング画像)がnullかどうかで処理を分けてください
     const uploadTask = storage
       .ref(`/images/${croppedImage.name}`)
       .put(croppedImage);
@@ -177,9 +179,6 @@ const Edit = ({ history }) => {
       // addDate()
     }
   };
-
-  console.log(previewImage);
-  console.log(croppedImage);
 
   return (
     <>
