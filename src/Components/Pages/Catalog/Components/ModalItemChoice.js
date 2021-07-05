@@ -7,7 +7,6 @@ const ModalItemChoice = ({ drinks, setOpenModalItemChoice, history }) => {
   const [path, setPath] = useState(null);
 
   //OKクリック時の処理
-  //AuthProvider導入までhistoryが使えないためコメントアウト
   const onClickPath = () => {
     if (path !== null) {
       history.push(`/edit/${path}`);
