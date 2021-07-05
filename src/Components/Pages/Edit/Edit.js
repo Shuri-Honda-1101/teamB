@@ -4,7 +4,7 @@ import firebase, { storage } from "../../../config/firebase";
 import { useParams } from "react-router-dom";
 import { AuthContext } from "../../utility/AuthService";
 
-const Edit = () => {
+const Edit = ({ history }) => {
   //分かりにくいのでvalue→tagTextに名前変えます(本田)
   // const [value, setValue] = useState("");
   const [tagText, setTagText] = useState("");
@@ -13,7 +13,6 @@ const Edit = () => {
   const [imageUrl, setImageUrl] = useState("");
   //０レートは無いため、デフォルト値は3にしておきます。レンダリング時に、3にチェックが入っている必要があるため、inputタグにcheckedを追加します（本田）
   const [rate, setRate] = useState(3);
-  const [name, setName] = useState("");
 
   //初期値を今日の日付にしておきます（本田）
   const yyyy = new Date().getFullYear();
@@ -70,8 +69,24 @@ const Edit = () => {
       .getDownloadURL()
       .then((firebaseUrl) => {
         pushDrinks(firebaseUrl);
+        pushTags();
       });
   };
+
+  //Tagsコレクションに追加する処理
+  const pushTags = async () => {
+    const uidDB = firebase.firestore().collection("users").doc(user.uid);
+    const allTagsGet = await uidDB.collection("tags").get();
+    const allTags = await allTagsGet.docs.map((doc) => doc.data().tag);
+    tags.forEach((tag) => {
+      if (allTags.includes(tag) !== true) {
+        uidDB.collection("tags").add({
+          tag: tag,
+        });
+      }
+    });
+  };
+
   const pushDrinks = (firebaseUrl) => {
     if (user !== null) {
       const userRef = db.collection("users").doc(user.uid);
@@ -81,17 +96,23 @@ const Edit = () => {
         .add({
           tags: tags,
           image: firebaseUrl,
-          drink: name,
+          drink: nameText,
           rate: rate,
+          dates: [new Date(date)],
         })
         .then((docRef) => {
           console.log("Document successfully written!");
-          docRef.collection("memos").add({
-            //input dateのvalueはstring型なので、timestamp型に変換してsetします。
-            // date: date,
-            date: new Date(date),
-            memo: memo,
-          });
+          docRef
+            .collection("memos")
+            .add({
+              //input dateのvalueはstring型なので、timestamp型に変換してsetします。
+              // date: date,
+              date: new Date(date),
+              memo: memo,
+            })
+            .then(() => {
+              history.push(`/user/${user.uid}`);
+            });
         })
         .catch((error) => {
           console.log("Error writing document: ", error);
@@ -119,18 +140,19 @@ const Edit = () => {
   //   setMemo(value);
   // };
 
+  //handleSubmitに処理を移動しました（本田）
   //お酒の名前を入力時に空欄を防止してnameにセットする処理
-  const drinkName = () => {
-    //このままだと、空欄時になぜ保存されなかったかユーザーがわからない為、アラートを出します（本田）
-    // if (value === "") return;
-    if (nameText === "") {
-      alert("保存に失敗しました。お酒の名前は必須入力欄です");
-      return;
-    }
-    //ここもnameTextに変更します（本田）
-    // setName(value);
-    setName(nameText);
-  };
+  // const drinkName = () => {
+  //   //このままだと、空欄時になぜ保存されなかったかユーザーがわからない為、アラートを出します（本田）
+  //   // if (value === "") return;
+  //   if (nameText === "") {
+  //     alert("保存に失敗しました。お酒の名前は必須入力欄です");
+  //     return;
+  //   }
+  //   //ここもnameTextに変更します（本田）
+  //   // setName(value);
+  //   setName(nameText);
+  // };
 
   //inputタグで処理を書くため不要（本田）
   // const addDate = () => {
@@ -139,12 +161,17 @@ const Edit = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    uploadImage();
-    //addMemoは不要になったので消します（本田）
-    // addMemo();
-    drinkName();
-    //こちらも不要なので消します（本田）
-    // addDate()
+    if (nameText === "") {
+      alert("保存に失敗しました。お酒の名前は必須入力欄です");
+      return;
+    } else {
+      // drinkName();
+      uploadImage();
+      //addMemoは不要になったので消します（本田）
+      // addMemo();
+      //こちらも不要なので消します（本田）
+      // addDate()
+    }
   };
   console.log(tags);
 
