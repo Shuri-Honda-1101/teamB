@@ -5,27 +5,49 @@ import { useParams } from "react-router-dom";
 import { AuthContext } from "../../utility/AuthService";
 
 const Edit = () => {
-  const [value, setValue] = useState("");
+  //分かりにくいのでvalue→tagTextに名前変えます(本田)
+  // const [value, setValue] = useState("");
+  const [tagText, setTagText] = useState("");
   const [tags, setTags] = useState([]);
   const [image, setImage] = useState("");
   const [imageUrl, setImageUrl] = useState("");
-  const [rate, setRate] = useState(0);
+  //０レートは無いため、デフォルト値は3にしておきます。レンダリング時に、3にチェックが入っている必要があるため、inputタグにcheckedを追加します（本田）
+  const [rate, setRate] = useState(3);
   const [name, setName] = useState("");
-  const [date, setDate] = useState("");
-  const [memo, setMemo] = useState("");
 
+  //初期値を今日の日付にしておきます（本田）
+  const yyyy = new Date().getFullYear();
+  const mm = ("0" + (new Date().getMonth() + 1)).slice(-2);
+  const dd = ("0" + new Date().getDate()).slice(-2);
+  const [date, setDate] = useState(`${yyyy}-${mm}-${dd}`);
+
+  const [memo, setMemo] = useState("");
+  //お酒の名前入力の空欄防止に追加したstate（本田）
+  const [nameText, setNameText] = useState("");
+
+  //今後のタスクで必要な処理です。（本田）
+  //didがundefinedの時は新規作成、IDが入っている時はお酒の名前とレートのデフォルト入力をfirestoreから取ってきた値にして、保存時にアップデート処理をしてください（本田）
   const did = useParams().id;
   console.log(did);
 
   const user = useContext(AuthContext);
   const db = firebase.firestore();
-
   console.log(db);
 
   //画像をアップロード
-  const handleImage = (e) => {
-    const image = e.target.files[0];
-    setImage(image);
+  //短いコードなので画像inputタグにまとめました（本田）
+  // const handleImage = (e) => {
+  //   const image = e.target.files[0];
+  //   setImage(image);
+  // };
+
+  const next = (snapshot) => {
+    const percent = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+    console.log(percent + "% done");
+    console.log(snapshot);
+  };
+  const error = (error) => {
+    console.log(error);
   };
 
   const uploadImage = () => {
@@ -39,15 +61,6 @@ const Edit = () => {
       error,
       complete
     );
-  };
-
-  const next = (snapshot) => {
-    const percent = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-    console.log(percent + "% done");
-    console.log(snapshot);
-  };
-  const error = (error) => {
-    console.log(error);
   };
 
   const complete = () => {
@@ -67,14 +80,16 @@ const Edit = () => {
         .collection("drinks")
         .add({
           tags: tags,
-          imageUrl: firebaseUrl,
-          name: name,
+          image: firebaseUrl,
+          drink: name,
           rate: rate,
         })
         .then((docRef) => {
           console.log("Document successfully written!");
           docRef.collection("memos").add({
+            //input dateのvalueはstring型なので、timestamp型に変換してsetします。
             // date: date,
+            date: new Date(date),
             memo: memo,
           });
         })
@@ -83,65 +98,121 @@ const Edit = () => {
         });
     }
   };
-  const handleRate = () => {};
+
+  //rateのinputタグに入れました。（本田）
+  // const handleRate = () => {};
 
   //タグの名前を入力
+  // タグを送信して配列としてセットする
   const addTags = (e) => {
     e.preventDefault();
-    if (value === "") return;
-
-    setTags([...tags, value]);
+    if (tagText === "") return;
+    setTags([...tags, tagText]);
+    // 追加後にタグ入力欄を空欄にします（本田）
+    setTagText("");
   };
 
   //メモを入力
-  const addMemo = () => {
-    // e.preventDefault()
-    if (value === "") return;
+  //メモは空欄でも大丈夫なので、メモinputタグにまとめました（本田）
+  // const addMemo = () => {
+  //   if (value === "") return;
+  //   setMemo(value);
+  // };
 
-    setMemo(value);
-  };
-  //お酒の名前を入力
+  //お酒の名前を入力時に空欄を防止してnameにセットする処理
   const drinkName = () => {
-    if (value === "") return;
-
-    setName(value);
+    //このままだと、空欄時になぜ保存されなかったかユーザーがわからない為、アラートを出します（本田）
+    // if (value === "") return;
+    if (nameText === "") {
+      alert("保存に失敗しました。お酒の名前は必須入力欄です");
+      return;
+    }
+    //ここもnameTextに変更します（本田）
+    // setName(value);
+    setName(nameText);
   };
 
-  const addDate = () => {
-    setDate(date);
-  };
+  //inputタグで処理を書くため不要（本田）
+  // const addDate = () => {
+  //   setDate(date);
+  // };
 
   const handleSubmit = (e) => {
     e.preventDefault();
     uploadImage();
-    addMemo();
+    //addMemoは不要になったので消します（本田）
+    // addMemo();
     drinkName();
+    //こちらも不要なので消します（本田）
     // addDate()
   };
   console.log(tags);
+
   return (
     <>
       <h1>ここはEditコンポーネントです</h1>
       <form onSubmit={handleSubmit}>
         <div>
           <span>画像：</span>
-          <input type="file" accept="image/*" onChange={handleImage} />
+          <input
+            type="file"
+            accept="image/*"
+            onChange={(e) => {
+              setImage(e.target.files[0]);
+              //setImageUrlをしておらず、せっかくの画像確認タグが死に絶えているので、選択した画像をURLに変換してsetImageUrlします。（本田）
+              setImageUrl(window.URL.createObjectURL(e.target.files[0]));
+            }}
+          />
         </div>
 
-        <img src={imageUrl} alt="uploaded" />
+        {/* 画像が確認できるようになってるのめちゃくちゃ良いですね！ナイスです！画像が大きすぎると困るので仮でheightを指定しておきました（本田） */}
+        <img src={imageUrl} height={200} alt="uploaded" />
 
         <div>
           　<span>レーティング：</span>
+          {/* onChengeを追加し、setRateします。 */}
+          <input
+            type="radio"
+            name="rating"
+            value="1"
+            //onChengeでユーザーが変更するとrateに各valueが入ります（ここは１のタグなので１が入る）（本田）
+            //rateが１の時は、ここにcheckを入れておいてくださいねという指示をcheckedで出します。（初期値の反映のため）（本田）
+            checked={rate === 1}
+            onChange={(e) => setRate(Number(e.target.value))}
+          />
           <span>1</span>
-          <input type="radio" name="rating" value="1" />
+          <input
+            type="radio"
+            name="rating"
+            value="2"
+            checked={rate === 2}
+            onChange={(e) => setRate(Number(e.target.value))}
+          />
           <span>2</span>
-          <input type="radio" name="rating" value="2" />
+          <input
+            type="radio"
+            name="rating"
+            value="3"
+            checked={rate === 3}
+            onChange={(e) => setRate(Number(e.target.value))}
+          />
           <span>3</span>
-          <input type="radio" name="rating" value="3" />
+          <input
+            type="radio"
+            name="rating"
+            value="4"
+            checked={rate === 4}
+            onChange={(e) => setRate(Number(e.target.value))}
+          />
           <span>4</span>
-          <input type="radio" name="rating" value="4" />
+          <input
+            type="radio"
+            name="rating"
+            value="5"
+            checked={rate === 5}
+            onChange={(e) => setRate(Number(e.target.value))}
+          />
           <span>5</span>
-          <input type="radio" name="rating" value="5" />
         </div>
 
         <TagsList tags={tags} />
@@ -151,8 +222,10 @@ const Edit = () => {
           <input
             name="name"
             placeholder="タグ"
+            // 追加後に空欄にしたいため、valueを追加しました（本田）
+            value={tagText}
             onChange={(e) => {
-              setValue(e.target.value);
+              setTagText(e.target.value);
             }}
           />
           <button onClick={addTags} type="submit">
@@ -165,9 +238,13 @@ const Edit = () => {
           <input
             type="name"
             name="name"
+            //valueを追加しましょう
+            value={nameText}
             placeholder="お酒の名前"
             onChange={(e) => {
-              setValue(e.target.value);
+              // このsetValueはタグ部分で使われいるstateなので使いません。新しいstateを追加します。nameText。（本田）
+              // setValue(e.target.value);
+              setNameText(e.target.value);
             }}
           />
         </div>
@@ -177,7 +254,12 @@ const Edit = () => {
             type="date"
             name="date"
             placeholder="日付"
-            onChange={addDate}
+            //初期値を与えたいため、valueを追加します（本田）
+            value={date}
+            //初期値があるので、ここでそのままsetDateします。（本田）
+            onChange={(e) => {
+              setDate(e.target.value);
+            }}
           />
         </div>
         <div>
@@ -187,8 +269,12 @@ const Edit = () => {
             rows="10"
             cols="40"
             placeholder="メモ"
+            // valueの追加、初期値いらないので無くても良いかも？(本田)
+            value={memo}
             onChange={(e) => {
-              setValue(e.target.value);
+              // このsetValueはタグ部分で使われいるstateなので使いません。memoは空欄で保存したい場合もあると思うので、必須入力にしません。そのため、ここでそのままsetMemoします（本田）
+              // setValue(e.target.value);
+              setMemo(e.target.value);
             }}
           />
           <div>
