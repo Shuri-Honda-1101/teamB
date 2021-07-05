@@ -4,12 +4,19 @@ import firebase, { storage } from "../../../config/firebase";
 import { useParams } from "react-router-dom";
 import { AuthContext } from "../../utility/AuthService";
 import ModalTagChoice from "../../utility/ModalTagChoice";
+import ModalCropper from "./Components/ModalCropper";
+import imageDefault from "../../../img/imageDefault.png";
+import { useRef } from "react";
 
 const Edit = ({ history }) => {
-  const [image, setImage] = useState("");
-  const [imageUrl, setImageUrl] = useState("");
+  const [selectImageValue, setSelectImageValue] = useState("");
+  const [imageUrl, setImageUrl] = useState(null);
+  const inputImageRef = useRef(null);
   //０レートは無いため、デフォルト値は3にしておきます。レンダリング時に、3にチェックが入っている必要があるため、inputタグにcheckedを追加します（本田）
   const [rate, setRate] = useState(3);
+  //ここにプレビュー画像の初期値を入れます。存在する場合はその画像を、無い場合はimageDefaultを使うようにしてください
+  const [previewImage, setPreviewImage] = useState(imageDefault);
+  const [croppedImage, setCroppedImage] = useState(null);
 
   //初期値を今日の日付にしておきます（本田）
   const yyyy = new Date().getFullYear();
@@ -34,11 +41,13 @@ const Edit = ({ history }) => {
   console.log(db);
 
   //画像をアップロード
-  //短いコードなので画像inputタグにまとめました（本田）
-  // const handleImage = (e) => {
-  //   const image = e.target.files[0];
-  //   setImage(image);
-  // };
+  const onSelectFile = (e) => {
+    if (e.target.files && e.target.files.length > 0) {
+      const reader = new FileReader();
+      reader.addEventListener("load", () => setImageUrl(reader.result));
+      reader.readAsDataURL(e.target.files[0]);
+    }
+  };
 
   console.log(choiceTagArray);
 
@@ -52,10 +61,13 @@ const Edit = ({ history }) => {
   };
 
   const uploadImage = () => {
-    if (image === "") {
-      alert("ファイルが選択されていません");
+    if (previewImage === imageDefault) {
+      alert("画像ファイルが選択されていません");
     }
-    const uploadTask = storage.ref(`/images/${image.name}`).put(image);
+    //croppedImage(トリミング画像)がnullかどうかで処理を分けてください
+    const uploadTask = storage
+      .ref(`/images/${croppedImage.name}`)
+      .put(croppedImage);
     uploadTask.on(
       firebase.storage.TaskEvent.STATE_CHANGED,
       next,
@@ -67,7 +79,7 @@ const Edit = ({ history }) => {
   const complete = () => {
     storage
       .ref("images")
-      .child(image.name)
+      .child(croppedImage.name)
       .getDownloadURL()
       .then((firebaseUrl) => {
         pushDrinks(firebaseUrl);
@@ -81,13 +93,14 @@ const Edit = ({ history }) => {
     const allTagsGet = await uidDB.collection("tags").get();
     const allTags = await allTagsGet.docs.map((doc) => doc.data().tag);
     //既存のタグ一覧に今回追加するタグが存在しない場合のみ、タグ一覧に追加する
-    choiceTagArray.forEach((tag) => {
-      if (allTags.includes(tag) !== true) {
-        uidDB.collection("tags").add({
-          tag: tag,
-        });
-      }
-    });
+    choiceTagArray &&
+      choiceTagArray.forEach((tag) => {
+        if (allTags.includes(tag) !== true) {
+          uidDB.collection("tags").add({
+            tag: tag,
+          });
+        }
+      });
   };
 
   const pushDrinks = (firebaseUrl) => {
@@ -169,6 +182,15 @@ const Edit = ({ history }) => {
 
   return (
     <>
+      {imageUrl && (
+        <ModalCropper
+          setImageUrl={setImageUrl}
+          setSelectImageValue={setSelectImageValue}
+          imageUrl={imageUrl}
+          setPreviewImage={setPreviewImage}
+          setCroppedImage={setCroppedImage}
+        />
+      )}
       {openModalTagChoice && (
         <ModalTagChoice
           user={user}
@@ -180,20 +202,24 @@ const Edit = ({ history }) => {
       <h1>ここはEditコンポーネントです</h1>
       <form onSubmit={handleSubmit}>
         <div>
-          <span>画像：</span>
+          <span>
+            {/* imgタグはここに移動しました */}
+            <img
+              src={previewImage}
+              onClick={() => inputImageRef.current.click()}
+              height={200}
+              alt="画像プレビュー"
+            />
+          </span>
           <input
+            hidden
+            ref={inputImageRef}
             type="file"
             accept="image/*"
-            onChange={(e) => {
-              setImage(e.target.files[0]);
-              //setImageUrlをしておらず、せっかくの画像確認タグが死に絶えているので、選択した画像をURLに変換してsetImageUrlします。（本田）
-              setImageUrl(window.URL.createObjectURL(e.target.files[0]));
-            }}
+            value={selectImageValue}
+            onChange={onSelectFile}
           />
         </div>
-
-        {/* 画像が確認できるようになってるのめちゃくちゃ良いですね！ナイスです！画像が大きすぎると困るので仮でheightを指定しておきました（本田） */}
-        <img src={imageUrl} height={200} alt="uploaded" />
 
         <div>
           　<span>レーティング：</span>
