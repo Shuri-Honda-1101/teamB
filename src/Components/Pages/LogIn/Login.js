@@ -1,15 +1,25 @@
-import React, { useState } from "react";
-import firebase from "../config/firebase";
+import React, { useState, useContext } from "react";
+import firebase from "../../../config/firebase";
+import { AuthContext } from "../../utility/AuthService";
+import { Redirect } from "react-router";
+import { Link } from "react-router-dom";
 
-const Login = () => {
+const Login = ({ history }) => {
+  const user = useContext(AuthContext);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
+  if (user) {
+    return <Redirect to={`/user/${user.uid}`} />;
+  }
   const handleSubmit = (e) => {
     e.preventDefault();
     firebase
       .auth()
       .signInWithEmailAndPassword(email, password)
+      .then(() => {
+        history.push(`/user/${user.uid}`);
+      })
       .catch((err) => {
         console.log(err);
       });
@@ -46,6 +56,7 @@ const Login = () => {
         </div>
         <button type="submit">Login</button>
       </form>
+      <Link to="/signup">新規登録</Link>
     </>
   );
 };

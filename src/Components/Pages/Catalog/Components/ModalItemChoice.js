@@ -3,19 +3,25 @@
 // import styled from "styled-components";
 // import AllDrinkListItem from "./AllDrinkListItem";
 
+<<<<<<< HEAD:src/Components/ModalItemChoice.js
 // const ModalItemChoice = ({ drinks, setOpenModalItemChoice }) => {
 //   const [path, setPath] = useState(null);
+=======
+const ModalItemChoice = ({ drinks, setOpenModalItemChoice, history }) => {
+  const [path, setPath] = useState(null);
+>>>>>>> ff7318ebd4481d3fb47f65b23f76d0fe4f705042:src/Components/Pages/Catalog/Components/ModalItemChoice.js
 
-  //   //OKクリック時の処理
-  //   //AuthProvider導入までhistoryが使えないためコメントアウト
-  //   const onClickPath = () => {
-  //     if (path !== null) {
-  //       history.push(`/edit/${path}`);
-  //     } else {
-  //       alert("お酒が選択されていません");
-  //     }
-  //   };
+  //OKクリック時の処理
+  //AuthProvider導入までhistoryが使えないためコメントアウト
+  const onClickPath = () => {
+    if (path !== null) {
+      history.push(`/edit/${path}`);
+    } else {
+      alert("お酒が選択されていません");
+    }
+  };
 
+<<<<<<< HEAD:src/Components/ModalItemChoice.js
 //   return (
 //     <>
 //       <SModalWrap>
@@ -54,6 +60,43 @@
 //     </>
 //   );
 // };
+=======
+  return (
+    <>
+      <SModalWrap>
+        <SModalInner>
+          <button
+            onClick={() => {
+              setOpenModalItemChoice(false);
+            }}
+          >
+            戻る
+          </button>
+          <p>どのお酒にメモを残しますか？</p>
+          <ul>
+            {drinks &&
+              drinks.map((drink) => {
+                return (
+                  <AllDrinkListItem
+                    key={drink.id}
+                    id={drink.id}
+                    drink={drink.drink}
+                    setPath={setPath}
+                  />
+                );
+              })}
+          </ul>
+          <button onClick={onClickPath}>OK</button>
+          <p>もしくは</p>
+          <Link to="/new">
+            <button>新しく追加する</button>
+          </Link>
+        </SModalInner>
+      </SModalWrap>
+    </>
+  );
+};
+>>>>>>> ff7318ebd4481d3fb47f65b23f76d0fe4f705042:src/Components/Pages/Catalog/Components/ModalItemChoice.js
 
 // const SModalWrap = styled.section`
 //   z-index: 1;

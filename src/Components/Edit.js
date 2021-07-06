@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import TagsList from './TagsList';
 import firebase, { storage } from "../config/firebase"
+import { useParams } from 'react-router-dom';
 
 const Edit = () => {
   const [value, setValue] = useState('');
@@ -12,7 +13,7 @@ const Edit = () => {
   const [date, setDate] = useState('');
   const [memo, setMemo] = useState('');
 
-
+　
   // const user = useContext(AuthContext);
   const user = firebase.auth().currentUser;
   const db = firebase.firestore();
