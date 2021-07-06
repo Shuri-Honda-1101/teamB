@@ -22,6 +22,7 @@ const App = () => {
             <Route exact path="/" component={Home} />
             <LoggedInRoute exact path="/new" component={Edit} />
             <LoggedInRoute exact path="/edit/:id" component={Edit} />
+            <LoggedInRoute exact path="/edit/:id/:mid" component={Edit} />
             <LoggedInRoute
               exact
               path="/user/:uid/items/:did"
