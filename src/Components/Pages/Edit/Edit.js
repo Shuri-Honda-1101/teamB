@@ -9,6 +9,8 @@ import imageDefault from "../../../img/imageDefault.png";
 import { useRef } from "react";
 
 const Edit = ({ history }) => {
+  const did = useParams().id;
+
   const [selectImageValue, setSelectImageValue] = useState("");
   const [imageUrl, setImageUrl] = useState(null);
   const inputImageRef = useRef(null);
@@ -33,7 +35,14 @@ const Edit = ({ history }) => {
 
   //今後のタスクで必要な処理です。（本田）
   //didがundefinedの時は新規作成、IDが入っている時はお酒の名前とレートのデフォルト入力をfirestoreから取ってきた値にして、保存時にアップデート処理をしてください（本田）
-  const did = useParams().id;
+  // const {id} = useParams();
+
+  // db.collection('users').get().then((querySnapshot) => {
+  //   querySnapshot.forEach((doc) => {
+  //     console.log(doc.id, "=>", doc.data());
+  //   })
+  // })
+
   console.log(did);
 
   const user = useContext(AuthContext);
@@ -165,18 +174,49 @@ const Edit = ({ history }) => {
   //   setDate(date);
   // };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e, firebaseUrl) => {
+    const userRef = db.collection("users").doc(user.uid);
     e.preventDefault();
-    if (nameText === "") {
-      alert("保存に失敗しました。お酒の名前は必須入力欄です");
-      return;
+    if (did === undefined) {
+      if (nameText === "") {
+        alert("保存に失敗しました。お酒の名前は必須入力欄です");
+        return;
+      } else {
+        // drinkName();
+        uploadImage();
+        //addMemoは不要になったので消します（本田）
+        // addMemo();
+        //こちらも不要なので消します（本田）
+        // addDate()
+      }
     } else {
-      // drinkName();
-      uploadImage();
-      //addMemoは不要になったので消します（本田）
-      // addMemo();
-      //こちらも不要なので消します（本田）
-      // addDate()
+      userRef
+        .collection("drinks")
+        .doc(did)
+        .update({
+          tags: choiceTagArray,
+          image: firebaseUrl,
+          drink: nameText,
+          rate: rate,
+          dates: [new Date(date)],
+        })
+        .then((docRef) => {
+          console.log("Document successfully written!");
+          docRef
+            .collection("memos")
+            .add({
+              //input dateのvalueはstring型なので、timestamp型に変換してsetします。
+              // date: date,
+              date: new Date(date),
+              memo: memo,
+            })
+            .then(() => {
+              history.push(`/user/${user.uid}`);
+            });
+        })
+        .catch((error) => {
+          console.log("Error writing document: ", error);
+        });
     }
   };
 
