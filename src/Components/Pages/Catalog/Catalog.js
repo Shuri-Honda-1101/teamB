@@ -13,7 +13,6 @@ const Catalog = ({ history }) => {
   const [endDate, setEndDate] = useState(null);
   const [focusedInput, setFocusedInput] = useState("startDate");
   const [openModalRangePicker, setOpenModalRangePicker] = useState(false);
-  const [userTags, setUserTags] = useState(null);
   const [openModalTagChoice, setOpenModalTagChoice] = useState(false);
   const [filterTagArray, setFilterTagArray] = useState([]);
   const [allDrinks, setAllDrinks] = useState(null);
@@ -41,9 +40,9 @@ const Catalog = ({ history }) => {
 
   //表示期間が指定された時の処理を定義した関数
   const rangeFilterDrinks = (drinks, startDate, endDate) => {
-    //react-datesで取れてくる日時は12:00のものなので-12hしたい。
+    //react-datesで取れてくる日時は12:00のもの、firestoreのtimestampは9:00なので-3hしたい。
     //momentsで演算を行うと、カレンダーの表示がバグるため、秒で計算
-    const second12h = 1 * 60 * 60 * 12;
+    const second12h = 1 * 60 * 60 * 3;
     const startDate00 = startDate.unix() - second12h;
     const endDate00 = endDate.unix() - second12h;
     drinks.forEach((drink) => {
@@ -95,31 +94,30 @@ const Catalog = ({ history }) => {
           setDrinks(drinks);
         });
       //ユーザータグ一覧取得
-      uidDB.collection("tags").onSnapshot((querySnapshot) => {
-        let tags = querySnapshot.docs.map((doc) => {
-          return { ...doc.data(), id: doc.id, trigger: false };
-        });
-        setUserTags(tags);
-      });
+      // uidDB.collection("tags").onSnapshot((querySnapshot) => {
+      //   let tags = querySnapshot.docs.map((doc) => {
+      //     return { ...doc.data(), id: doc.id, trigger: false };
+      //   });
+      //   setUserTags(tags);
+      // });
     }
   }, [user, startDate, endDate, filterTagArray]);
   console.log(drinks);
-  console.log(userTags);
 
-  //タグ絞り込み（ModalItemChoice）のOKを押した時の処理
-  const addFilterTagArray = () => {
-    const results = userTags.filter((userTag) => userTag.trigger === true);
-    const newResults = results.map((result) => result.tag);
-    setFilterTagArray(newResults);
-  };
+  // //タグ絞り込み（ModalItemChoice）のOKを押した時の処理
+  // const addFilterTagArray = () => {
+  //   const results = userTags.filter((userTag) => userTag.trigger === true);
+  //   const newResults = results.map((result) => result.tag);
+  //   setFilterTagArray(newResults);
+  // };
 
   return (
     <>
       {openModalTagChoice && (
         <ModalTagChoice
           setOpenModalTagChoice={setOpenModalTagChoice}
-          userTags={userTags}
-          addFilterTagArray={addFilterTagArray}
+          user={user}
+          setChoiceTagArray={setFilterTagArray}
         />
       )}
       {openModalRangePicker && (
