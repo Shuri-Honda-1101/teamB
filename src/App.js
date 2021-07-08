@@ -46,6 +46,9 @@ ${reset}
 html{
   font-size: 62.5%;
 }
+body{
+  padding: calc(62 / 375 * 100vw) 0 calc(48 / 375 * 100vw) 0;
+}
 `;
 
 export default App;

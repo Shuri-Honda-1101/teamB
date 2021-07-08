@@ -5,6 +5,8 @@ import DrinkItem from "./Components/DrinkItem";
 import ModalItemChoice from "./Components/ModalItemChoice";
 import ModalRangePicker from "./Components/ModalRangePicker";
 import ModalTagChoice from "../../utility/ModalTagChoice";
+import Header from "../../utility/Header";
+import Footer from "../../utility/Footer";
 
 const Catalog = ({ history }) => {
   const [drinks, setDrinks] = useState(null);
@@ -113,6 +115,7 @@ const Catalog = ({ history }) => {
 
   return (
     <>
+      <Header />
       {openModalTagChoice && (
         <ModalTagChoice
           setOpenModalTagChoice={setOpenModalTagChoice}
@@ -200,6 +203,7 @@ const Catalog = ({ history }) => {
             })}
         </ul>
       </div>
+      <Footer />
     </>
   );
 };
