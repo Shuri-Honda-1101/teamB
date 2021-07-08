@@ -7,6 +7,7 @@ import ModalRangePicker from "./Components/ModalRangePicker";
 import ModalTagChoice from "../../utility/ModalTagChoice";
 import Header from "../../utility/Header";
 import Footer from "../../utility/Footer";
+import styled from "styled-components";
 
 const Catalog = ({ history }) => {
   const [drinks, setDrinks] = useState(null);
@@ -62,9 +63,7 @@ const Catalog = ({ history }) => {
   const tagFilterDrinks = (filterTagArray, drinks) => {
     //filterTagArrayの要素を順番にフィルターにかけていく
     filterTagArray.forEach((tag) => {
-      drinks = drinks.filter((drink) => {
-        return drink.tags.includes(tag);
-      });
+      drinks = drinks.filter((drink) => drink.tags && drink.tags.includes(tag));
     });
     return drinks;
   };
@@ -74,44 +73,28 @@ const Catalog = ({ history }) => {
     if (user != null) {
       const uidDB = firebase.firestore().collection("users").doc(user.uid);
       //お酒一覧取得
-      uidDB
-        .collection("drinks")
-        // .collection(user.uid)
-        .onSnapshot((querySnapshot) => {
-          let drinks = querySnapshot.docs.map((doc) => {
-            return { ...doc.data(), id: doc.id };
-          });
-          setAllDrinks(drinks);
-          //範囲指定された時にフィルターをかけたものをdrinksに代入
-          if (startDate && endDate) {
-            drinks = rangeFilterDrinks(drinks, startDate, endDate);
-          }
-          //タグで絞り込み時にフィルターをかけたものをdrinksに代入
-          if (filterTagArray.length >= 1) {
-            drinks = tagFilterDrinks(filterTagArray, drinks);
-          }
-          //ソート
-          sortDrinks(drinks);
-          //ソートしたものをセット
-          setDrinks(drinks);
+      uidDB.collection("drinks").onSnapshot((querySnapshot) => {
+        let drinks = querySnapshot.docs.map((doc) => {
+          return { ...doc.data(), id: doc.id };
         });
-      //ユーザータグ一覧取得
-      // uidDB.collection("tags").onSnapshot((querySnapshot) => {
-      //   let tags = querySnapshot.docs.map((doc) => {
-      //     return { ...doc.data(), id: doc.id, trigger: false };
-      //   });
-      //   setUserTags(tags);
-      // });
+        setAllDrinks(drinks);
+        //範囲指定された時にフィルターをかけたものをdrinksに代入
+        if (startDate && endDate) {
+          drinks = rangeFilterDrinks(drinks, startDate, endDate);
+        }
+        //タグで絞り込み時にフィルターをかけたものをdrinksに代入
+        if (filterTagArray.length >= 1) {
+          drinks = tagFilterDrinks(filterTagArray, drinks);
+        }
+        //ソート
+        sortDrinks(drinks);
+        //ソートしたものをセット
+        setDrinks(drinks);
+      });
     }
   }, [user, startDate, endDate, filterTagArray]);
   console.log(drinks);
-
-  // //タグ絞り込み（ModalItemChoice）のOKを押した時の処理
-  // const addFilterTagArray = () => {
-  //   const results = userTags.filter((userTag) => userTag.trigger === true);
-  //   const newResults = results.map((result) => result.tag);
-  //   setFilterTagArray(newResults);
-  // };
+  console.log(filterTagArray);
 
   return (
     <>
@@ -141,45 +124,29 @@ const Catalog = ({ history }) => {
           history={history}
         />
       )}
-      <div>
-        {/* inputのままだと注意文が表示されるので、TextFieldなどに変更する valueにonClick等をを噛ませていない事による注意文？*/}
-        <input
-          label="react-dates"
-          value={
-            startDate && endDate
+      <SCatalogWrap>
+        <SFilterWrap>
+          <SFilterButton
+            start={startDate}
+            end={endDate}
+            onFocus={() => setOpenModalRangePicker(true)}
+          >
+            {startDate && endDate
               ? `${startDate.format(dateFormat)} ~ ${endDate.format(
                   dateFormat
                 )}`
-              : "全ての期間"
-          }
-          onFocus={() => setOpenModalRangePicker(true)}
-        ></input>
-        <button
-          style={
-            filterTagArray.length >= 1
-              ? { backgroundColor: "pink" }
-              : { backgroundColor: "white" }
-          }
-          onClick={() => {
-            setOpenModalTagChoice(true);
-          }}
-        >
-          タグで検索
-        </button>
-        <h1>ここはCatalogコンポーネントです</h1>
-        <button
-          onClick={() => {
-            firebase
-              .auth()
-              .signOut()
-              .then(() => history.push("/login"))
-              .catch((err) => {
-                console.log(err);
-              });
-          }}
-        >
-          ログアウト
-        </button>
+              : "すべての期間"}
+          </SFilterButton>
+          <SFilterButton
+            flag={filterTagArray.length}
+            onClick={() => {
+              setOpenModalTagChoice(true);
+            }}
+          >
+            タグで検索
+          </SFilterButton>
+        </SFilterWrap>
+
         <ul>
           {drinks &&
             drinks.map((drink) => {
@@ -195,7 +162,20 @@ const Catalog = ({ history }) => {
               );
             })}
         </ul>
-      </div>
+        <button
+          onClick={() => {
+            firebase
+              .auth()
+              .signOut()
+              .then(() => history.push("/login"))
+              .catch((err) => {
+                console.log(err);
+              });
+          }}
+        >
+          ログアウト
+        </button>
+      </SCatalogWrap>
       <Footer
         setOpenModalItemChoice={setOpenModalItemChoice}
         history={history}
@@ -204,5 +184,42 @@ const Catalog = ({ history }) => {
     </>
   );
 };
+
+const SCatalogWrap = styled.section`
+  padding: calc(10 / 375 * 100vw) calc(13 / 375 * 100vw);
+`;
+
+const SFilterWrap = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: calc(62 / 375 * 100vw);
+  justify-content: space-between;
+`;
+
+const SFilterButton = styled.button`
+  background-color: #212121;
+  color: #ffffff;
+  border: none;
+  width: calc(193 / 375 * 100vw);
+  height: calc(28 / 375 * 100vw);
+  font-size: calc(12 / 375 * 100vw);
+  letter-spacing: calc(3.6 / 375 * 100vw);
+  font-weight: 300;
+  border-radius: calc(4 / 375 * 100vw);
+
+  ${({ start, end }) =>
+    start &&
+    end &&
+    `border: 1px solid #fff;
+  background-color: #414040;
+  letter-spacing: calc(1.2 / 375 * 100vw);
+  `}
+  ${({ flag }) =>
+    flag >= "1" &&
+    `border: 1px solid #fff;
+  background-color: #414040;
+  `}
+`;
 
 export default Catalog;
