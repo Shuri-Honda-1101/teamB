@@ -180,13 +180,6 @@ const Catalog = ({ history }) => {
         >
           ログアウト
         </button>
-        <button
-          onClick={() => {
-            setOpenModalItemChoice(true);
-          }}
-        >
-          新規メモ作成
-        </button>
         <ul>
           {drinks &&
             drinks.map((drink) => {
@@ -203,7 +196,11 @@ const Catalog = ({ history }) => {
             })}
         </ul>
       </div>
-      <Footer />
+      <Footer
+        setOpenModalItemChoice={setOpenModalItemChoice}
+        history={history}
+        user={user}
+      />
     </>
   );
 };

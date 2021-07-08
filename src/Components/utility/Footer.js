@@ -4,13 +4,22 @@ import BuildIcon from "@material-ui/icons/Build";
 import styled from "styled-components";
 import { Button } from "@material-ui/core";
 
-const Footer = () => {
+const Footer = ({ setOpenModalItemChoice, history, user }) => {
   return (
     <SFooterWrap>
-      <SButton ontouchstart="">
+      <SButton
+        ontouchstart=""
+        onClick={() => {
+          history.push(`/user/${user.uid}`);
+        }}
+      >
         <HomeIcon />
       </SButton>
-      <SButton ontouchstart="">
+      <SButton
+        onClick={() => {
+          setOpenModalItemChoice(true);
+        }}
+      >
         <CreateIcon />
       </SButton>
       <SButton ontouchstart="">
