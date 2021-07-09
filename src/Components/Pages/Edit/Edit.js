@@ -15,9 +15,9 @@ const Edit = ({ history }) => {
   const [imageUrl, setImageUrl] = useState(null);
   const inputImageRef = useRef(null);
   //０レートは無いため、デフォルト値は3にしておきます。レンダリング時に、3にチェックが入っている必要があるため、inputタグにcheckedを追加します（本田）
-  const [rate, setRate] = useState(3);
+  const [rate, setRate] = useState(did ? 5 : 3);
   //ここにプレビュー画像の初期値を入れます。存在する場合はその画像を、無い場合はimageDefaultを使うようにしてください
-  const [previewImage, setPreviewImage] = useState(imageDefault);
+  const [previewImage, setPreviewImage] = useState(did ? null : imageDefault);
   const [croppedImage, setCroppedImage] = useState(null);
 
   //初期値を今日の日付にしておきます（本田）
