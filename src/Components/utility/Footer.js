@@ -8,7 +8,6 @@ const Footer = ({ setOpenModalItemChoice, history, user }) => {
   return (
     <SFooterWrap>
       <SButton
-        ontouchstart=""
         onClick={() => {
           history.push(`/user/${user.uid}`);
         }}
@@ -22,7 +21,7 @@ const Footer = ({ setOpenModalItemChoice, history, user }) => {
       >
         <CreateIcon />
       </SButton>
-      <SButton ontouchstart="">
+      <SButton>
         <BuildIcon />
       </SButton>
     </SFooterWrap>
@@ -43,9 +42,13 @@ const SFooterWrap = styled.footer`
 `;
 
 const SButton = styled(Button)`
+  width: calc(58 / 375 * 100vw);
+  min-width: calc(58 / 375 * 100vw);
+  border-radius: calc(6 / 375 * 100vw);
+  padding: calc(4 / 375 * 100vw) calc(17 / 375 * 100vw);
   .MuiSvgIcon-root {
     color: #5c5a5a;
-    font-size: calc(29 / 375 * 100vw);
+    font-size: calc(30 / 375 * 100vw);
     :hover {
       color: #fff;
     }

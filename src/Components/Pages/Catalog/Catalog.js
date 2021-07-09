@@ -131,11 +131,13 @@ const Catalog = ({ history }) => {
             end={endDate}
             onFocus={() => setOpenModalRangePicker(true)}
           >
-            {startDate && endDate
-              ? `${startDate.format(dateFormat)} ~ ${endDate.format(
-                  dateFormat
-                )}`
-              : "すべての期間"}
+            <p>
+              {startDate && endDate
+                ? `${startDate.format(dateFormat)} ~ ${endDate.format(
+                    dateFormat
+                  )}`
+                : "すべての期間"}
+            </p>
           </SFilterButton>
           <SFilterButton
             flag={filterTagArray.length}
@@ -143,25 +145,26 @@ const Catalog = ({ history }) => {
               setOpenModalTagChoice(true);
             }}
           >
-            タグで検索
+            <p>タグで検索</p>
           </SFilterButton>
         </SFilterWrap>
-
-        <ul>
-          {drinks &&
-            drinks.map((drink) => {
-              return (
-                <DrinkItem
-                  key={drink.id}
-                  id={drink.id}
-                  drink={drink.drink}
-                  rate={drink.rate}
-                  image={drink.image}
-                  tags={drink.tags}
-                />
-              );
-            })}
-        </ul>
+        <SDrinksWrap>
+          <ul>
+            {drinks &&
+              drinks.map((drink) => {
+                return (
+                  <DrinkItem
+                    key={drink.id}
+                    id={drink.id}
+                    drink={drink.drink}
+                    rate={drink.rate}
+                    image={drink.image}
+                    tags={drink.tags}
+                  />
+                );
+              })}
+          </ul>
+        </SDrinksWrap>
         <button
           onClick={() => {
             firebase
@@ -186,6 +189,8 @@ const Catalog = ({ history }) => {
 };
 
 const SCatalogWrap = styled.section`
+  background-color: #000;
+  color: #fff;
   padding: calc(10 / 375 * 100vw) calc(13 / 375 * 100vw);
 `;
 
@@ -203,10 +208,12 @@ const SFilterButton = styled.button`
   border: none;
   width: calc(193 / 375 * 100vw);
   height: calc(28 / 375 * 100vw);
-  font-size: calc(12 / 375 * 100vw);
-  letter-spacing: calc(3.6 / 375 * 100vw);
-  font-weight: 300;
-  border-radius: calc(4 / 375 * 100vw);
+  p {
+    font-size: calc(12 / 375 * 100vw);
+    letter-spacing: calc(3.6 / 375 * 100vw);
+    font-weight: 100;
+    border-radius: calc(4 / 375 * 100vw);
+  }
 
   ${({ start, end }) =>
     start &&
@@ -220,6 +227,10 @@ const SFilterButton = styled.button`
     `border: 1px solid #fff;
   background-color: #414040;
   `}
+`;
+
+const SDrinksWrap = styled.div`
+  margin-top: calc(19 / 375 * 100vw);
 `;
 
 export default Catalog;

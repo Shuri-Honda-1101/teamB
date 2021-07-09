@@ -49,8 +49,9 @@ html{
 }
 body{
   padding: calc(62 / 375 * 100vw) 0 calc(48 / 375 * 100vw) 0;
-  background-color: #000;
-  color: #fff;
+  /* background-color: #000;
+  color: #fff; */
+  font-weight: 200;
 }
 `;
 
