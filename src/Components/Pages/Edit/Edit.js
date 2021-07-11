@@ -7,8 +7,22 @@ import ModalTagChoice from "../../utility/ModalTagChoice";
 import ModalCropper from "./Components/ModalCropper";
 import imageDefault from "../../../img/imageDefault.png";
 import { useRef } from "react";
+import Header from "../../utility/Header";
+import Footer from "../../utility/Footer";
+import styled from "styled-components";
+import { makeStyles } from "@material-ui/core/styles";
+import Rating from "@material-ui/lab/Rating";
+import Box from "@material-ui/core/Box";
+import TextField from "@material-ui/core/TextField";
+
+const useStyles = makeStyles(() => ({
+  root: {
+    width: "250px",
+  },
+}));
 
 const Edit = ({ history }) => {
+  const classes = useStyles();
   const did = useParams().id;
 
   const [selectImageValue, setSelectImageValue] = useState("");
@@ -222,6 +236,7 @@ const Edit = ({ history }) => {
 
   return (
     <>
+      <Header />
       {imageUrl && (
         <ModalCropper
           setImageUrl={setImageUrl}
@@ -239,32 +254,44 @@ const Edit = ({ history }) => {
           newTagInput={newTagInput}
         />
       )}
-      <h1>ここはEditコンポーネントです</h1>
-      <form onSubmit={handleSubmit}>
-        <div>
-          <span>
-            {/* imgタグはここに移動しました */}
-            <img
-              src={previewImage}
-              onClick={() => inputImageRef.current.click()}
-              height={200}
-              alt="画像プレビュー"
+      <SEditWrap>
+        <h1>ここはEditコンポーネントです</h1>
+        <form onSubmit={handleSubmit}>
+          <div>
+            <span>
+              {/* imgタグはここに移動しました */}
+              <img
+                src={previewImage}
+                onClick={() => inputImageRef.current.click()}
+                height={200}
+                alt="画像プレビュー"
+              />
+            </span>
+            <input
+              hidden
+              ref={inputImageRef}
+              type="file"
+              accept="image/*"
+              value={selectImageValue}
+              onChange={onSelectFile}
             />
-          </span>
-          <input
-            hidden
-            ref={inputImageRef}
-            type="file"
-            accept="image/*"
-            value={selectImageValue}
-            onChange={onSelectFile}
-          />
-        </div>
+          </div>
 
-        <div>
-          　<span>レーティング：</span>
-          {/* onChangeを追加し、setRateします。 */}
-          <input
+          <div>
+            {/* 　<span>レーティング：</span> */}
+            {/* onChangeを追加し、setRateします。 */}
+
+            <Box component="fieldset" mb={3} borderColor="transparent">
+              <Rating
+                name="simple-controlled"
+                value={rate}
+                onChange={(e, newRate) => {
+                  setRate(newRate);
+                }}
+              />
+            </Box>
+
+            {/* <input
             type="radio"
             name="rating"
             value="1"
@@ -305,75 +332,98 @@ const Edit = ({ history }) => {
             checked={rate === 5}
             onChange={(e) => setRate(Number(e.target.value))}
           />
-          <span>5</span>
-        </div>
-
-        <div>
-          <span>タグ：</span>
-          <TagsList tags={choiceTagArray} />
-
-          <button
-            type="button"
-            onClick={() => {
-              setOpenModalTagChoice(true);
-              setNewTagInput(true);
-            }}
-          >
-            タグを追加する
-          </button>
-        </div>
-
-        <div>
-          <span>お酒：</span>
-          <input
-            type="name"
-            name="name"
-            //valueを追加しましょう
-            value={nameText}
-            placeholder="お酒の名前"
-            onChange={(e) => {
-              // このsetValueはタグ部分で使われいるstateなので使いません。新しいstateを追加します。nameText。（本田）
-              // setValue(e.target.value);
-              setNameText(e.target.value);
-            }}
-          />
-        </div>
-        <div>
-          <span>日付：</span>
-          <input
-            type="date"
-            name="date"
-            placeholder="日付"
-            //初期値を与えたいため、valueを追加します（本田）
-            value={date}
-            //初期値があるので、ここでそのままsetDateします。（本田）
-            onChange={(e) => {
-              setDate(e.target.value);
-            }}
-          />
-        </div>
-        <div>
-          <span>メモ：</span>
-          <textarea
-            type="submit"
-            rows="10"
-            cols="40"
-            placeholder="メモ"
-            // valueの追加、初期値いらないので無くても良いかも？(本田)
-            value={memo}
-            onChange={(e) => {
-              // このsetValueはタグ部分で使われいるstateなので使いません。memoは空欄で保存したい場合もあると思うので、必須入力にしません。そのため、ここでそのままsetMemoします（本田）
-              // setValue(e.target.value);
-              setMemo(e.target.value);
-            }}
-          />
-          <div>
-            <button type="submit">保存する</button>
+          <span>5</span> */}
           </div>
-        </div>
-      </form>
+
+          <div>
+            <span>タグ：</span>
+            <TagsList tags={choiceTagArray} />
+
+            <SAddButton
+              type="button"
+              onClick={() => {
+                setOpenModalTagChoice(true);
+                setNewTagInput(true);
+              }}
+            >
+              タグを追加する
+            </SAddButton>
+          </div>
+
+          <div className={classes.root}>
+            {/* <span>お酒：</span> */}
+            <TextField
+              type="name"
+              name="name"
+              //valueを追加しましょう
+              value={nameText}
+              label="お酒の名前"
+              onChange={(e) => {
+                // このsetValueはタグ部分で使われいるstateなので使いません。新しいstateを追加します。nameText。（本田）
+                // setValue(e.target.value);
+                setNameText(e.target.value);
+              }}
+            />
+          </div>
+          <div className={classes.root}>
+            {/* <span>日付：</span> */}
+            <TextField
+              type="date"
+              name="date"
+              label="日付"
+              //初期値を与えたいため、valueを追加します（本田）
+              value={date}
+              //初期値があるので、ここでそのままsetDateします。（本田）
+              onChange={(e) => {
+                setDate(e.target.value);
+              }}
+            />
+          </div>
+          <div>
+            {/* <span>メモ：</span> */}
+            <TextField
+              rows="10"
+              cols="40"
+              label="メモ"
+              // valueの追加、初期値いらないので無くても良いかも？(本田)
+              value={memo}
+              onChange={(e) => {
+                // このsetValueはタグ部分で使われいるstateなので使いません。memoは空欄で保存したい場合もあると思うので、必須入力にしません。そのため、ここでそのままsetMemoします（本田）
+                // setValue(e.target.value);
+                setMemo(e.target.value);
+              }}
+            />
+            <div>
+              <SSaveButton type="submit">保存</SSaveButton>
+            </div>
+          </div>
+        </form>
+      </SEditWrap>
+      <Footer />
     </>
   );
 };
+
+const SEditWrap = styled.section`
+  background-color: #000;
+  color: #fff;
+  padding: calc(10 / 375 * 100vw) calc(13 / 375 * 100vw);
+`;
+
+const SAddButton = styled.button`
+  background-color: #212121;
+  color: #ffffff;
+  border: none;
+  width: calc(193 / 375 * 100vw);
+  height: calc(28 / 375 * 100vw);
+`;
+
+const SSaveButton = styled.button`
+  background-color: #212121;
+  color: #ffffff;
+  border: none;
+  width: calc(193 / 375 * 100vw);
+  height: calc(28 / 375 * 100vw);
+`;
 
 export default Edit;
