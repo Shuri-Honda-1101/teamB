@@ -5,8 +5,14 @@ import { AuthContext } from "../../utility/AuthService";
 import firebase from "../../../config/firebase";
 import TagList from "../../utility/TagsList";
 import MemoListItem from "./Components/MemoListItem";
+import Header from "../../utility/Header";
+import Footer from "../../utility/Footer";
+import styled from "styled-components";
+import Rating from "@material-ui/lab/Rating";
+import ModalItemChoice from "../../utility/ModalItemChoice";
 
-const Item = () => {
+const Item = ({ history }) => {
+  const [openModalItemChoice, setOpenModalItemChoice] = useState(false);
   const [drinkData, setDrinkData] = useState(null);
   const [memos, setMemos] = useState(null);
 
@@ -39,37 +45,117 @@ const Item = () => {
         });
     }
   }, [user, drinkId]);
-  console.log(drinkData);
-  console.log(memos);
 
   return (
-    drinkData && (
-      <div>
-        <img src={drinkData.image} height={200} alt={drinkData.drink} />
-        <h1>{drinkData.drink}</h1>
-        <h2>レーティング: {drinkData.rate}</h2>
-        <button>今日飲んだ！</button>
-        <TagList tags={drinkData.tags} />
-        <div>
-          <ul>
-            {memos &&
-              memos.map((memo) => {
-                return (
-                  <MemoListItem
-                    key={memo.id}
-                    drinkId={drinkId}
-                    id={memo.id}
-                    memo={memo.memo}
-                    date={memo.YMDDate}
-                  />
-                );
-              })}
-          </ul>
-        </div>
-        <button>まとめて削除</button>
-      </div>
-    )
+    <>
+      <Header />
+      {openModalItemChoice && (
+        <ModalItemChoice
+          setOpenModalItemChoice={setOpenModalItemChoice}
+          history={history}
+        />
+      )}
+      {drinkData && (
+        <SItemWrap>
+          <img src={drinkData.image} alt={drinkData.drink} />
+          <SNameRateWrap>
+            <h2>{drinkData.drink}</h2>
+            <SRating name="rate" value={drinkData.rate} readOnly />
+          </SNameRateWrap>
+          <STagListWrap>
+            <TagList tags={drinkData.tags} />
+          </STagListWrap>
+          <SButton
+            onClick={() => {
+              history.push(`/edit/${drinkData.id}`);
+            }}
+          >
+            記録を残す
+          </SButton>
+          <div>
+            <ul>
+              {memos &&
+                memos.map((memo) => {
+                  return (
+                    <MemoListItem
+                      key={memo.id}
+                      drinkId={drinkId}
+                      id={memo.id}
+                      memo={memo.memo}
+                      date={memo.YMDDate}
+                    />
+                  );
+                })}
+            </ul>
+          </div>
+          <SButton>まとめて削除</SButton>
+        </SItemWrap>
+      )}
+      <Footer
+        setOpenModalItemChoice={setOpenModalItemChoice}
+        history={history}
+        user={user}
+      />
+    </>
   );
 };
+
+const SItemWrap = styled.section`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: calc(16 / 375 * 100vw) 0;
+  img {
+    width: calc(302 / 375 * 100vw);
+    height: calc(302 / 375 * 100vw);
+  }
+`;
+
+const SNameRateWrap = styled.div`
+  width: calc(302 / 375 * 100vw);
+  h2 {
+    margin-top: calc(34 / 375 * 100vw);
+    font-size: calc(17 / 375 * 100vw);
+    font-weight: 400;
+    letter-spacing: calc(4 / 375 * 100vw);
+    line-height: calc(24 / 17);
+  }
+`;
+
+const SRating = styled(Rating)`
+  margin-top: calc(6 / 375 * 100vw);
+  font-size: calc(24 / 375 * 100vw);
+  .MuiRating-icon {
+    margin-right: calc(3 / 375 * 100vw);
+  }
+  .MuiRating-iconFilled {
+    color: #ac966f;
+  }
+  .MuiRating-iconEmpty {
+    color: #414040;
+  }
+`;
+
+const STagListWrap = styled.div`
+  margin-top: calc(13 / 375 * 100vw);
+`;
+
+const SButton = styled.button`
+  background-color: #212121;
+  color: #ffffff;
+  border: none;
+  border-radius: calc(10 / 375 * 100vw);
+  width: calc(302 / 375 * 100vw);
+  height: calc(37 / 375 * 100vw);
+  margin-top: calc(13 / 375 * 100vw);
+  line-height: calc(37 / 375 * 100vw);
+  font-size: calc(14 / 375 * 100vw);
+  letter-spacing: calc(4.2 / 375 * 100vw);
+  font-weight: 100;
+  :hover {
+    border: 1px solid #fff;
+    background-color: #414040;
+  }
+`;
 
 export default Item;

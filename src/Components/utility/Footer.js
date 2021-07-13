@@ -3,8 +3,11 @@ import CreateIcon from "@material-ui/icons/Create";
 import BuildIcon from "@material-ui/icons/Build";
 import styled from "styled-components";
 import { Button } from "@material-ui/core";
+import { AuthContext } from "./AuthService";
+import { useContext } from "react";
 
-const Footer = ({ setOpenModalItemChoice, history, user }) => {
+const Footer = ({ setOpenModalItemChoice, history }) => {
+  const user = useContext(AuthContext);
   return (
     <SFooterWrap>
       <SButton

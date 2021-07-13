@@ -1,4 +1,4 @@
-import shortid from "shortid";
+import { nanoid } from "nanoid";
 import { Link, useRouteMatch } from "react-router-dom";
 import styled from "styled-components";
 import Rating from "@material-ui/lab/Rating";
@@ -15,7 +15,7 @@ const DrinkItem = ({ id, drink, rate, tags, image }) => {
           <STags>
             {tags &&
               tags.map((tag) => {
-                return <li key={shortid.generate()}>{tag}</li>;
+                return <li key={nanoid()}>{tag}</li>;
               })}
           </STags>
         </SDrinkItemListWrap>
@@ -68,12 +68,14 @@ const SRating = styled(Rating)`
 const STags = styled.ul`
   margin-top: calc(6 / 375 * 100vw);
   display: flex;
+  flex-wrap: wrap;
   align-content: space-between;
   li {
     border: 1px solid #ac966f;
     padding: calc(3 / 375 * 100vw) calc(17 / 375 * 100vw);
     border-radius: calc(14 / 375 * 100vw);
     margin-right: calc(4 / 375 * 100vw);
+    white-space: nowrap;
   }
 `;
 

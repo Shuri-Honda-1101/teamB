@@ -42,6 +42,7 @@ ${reset}
 *, *:before, *:after {
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
+
 }
 html{
   font-size: 62.5%;
@@ -49,9 +50,11 @@ html{
 }
 body{
   padding: calc(62 / 375 * 100vw) 0 calc(48 / 375 * 100vw) 0;
-  /* background-color: #000;
-  color: #fff; */
+  background-color: #000;
+  color: #fff;
   font-weight: 200;
+  font-family: "ヒラギノ角ゴシック";
+
 }
 `;
 
