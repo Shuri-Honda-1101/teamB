@@ -2,7 +2,7 @@ import { useContext, useEffect, useState } from "react";
 import firebase from "../../../config/firebase";
 import { AuthContext } from "../../utility/AuthService";
 import DrinkItem from "./Components/DrinkItem";
-import ModalItemChoice from "./Components/ModalItemChoice";
+import ModalItemChoice from "../../utility/ModalItemChoice";
 import ModalRangePicker from "./Components/ModalRangePicker";
 import ModalTagChoice from "../../utility/ModalTagChoice";
 import Header from "../../utility/Header";
@@ -18,7 +18,6 @@ const Catalog = ({ history }) => {
   const [openModalRangePicker, setOpenModalRangePicker] = useState(false);
   const [openModalTagChoice, setOpenModalTagChoice] = useState(false);
   const [filterTagArray, setFilterTagArray] = useState([]);
-  const [allDrinks, setAllDrinks] = useState(null);
 
   const user = useContext(AuthContext);
 
@@ -77,7 +76,6 @@ const Catalog = ({ history }) => {
         let drinks = querySnapshot.docs.map((doc) => {
           return { ...doc.data(), id: doc.id };
         });
-        setAllDrinks(drinks);
         //範囲指定された時にフィルターをかけたものをdrinksに代入
         if (startDate && endDate) {
           drinks = rangeFilterDrinks(drinks, startDate, endDate);
@@ -119,7 +117,6 @@ const Catalog = ({ history }) => {
       )}
       {openModalItemChoice && (
         <ModalItemChoice
-          drinks={allDrinks}
           setOpenModalItemChoice={setOpenModalItemChoice}
           history={history}
         />
@@ -131,13 +128,11 @@ const Catalog = ({ history }) => {
             end={endDate}
             onFocus={() => setOpenModalRangePicker(true)}
           >
-            <p>
-              {startDate && endDate
-                ? `${startDate.format(dateFormat)} ~ ${endDate.format(
-                    dateFormat
-                  )}`
-                : "すべての期間"}
-            </p>
+            {startDate && endDate
+              ? `${startDate.format(dateFormat)} ~ ${endDate.format(
+                  dateFormat
+                )}`
+              : "すべての期間"}
           </SFilterButton>
           <SFilterButton
             flag={filterTagArray.length}
@@ -145,7 +140,7 @@ const Catalog = ({ history }) => {
               setOpenModalTagChoice(true);
             }}
           >
-            <p>タグで検索</p>
+            タグで検索
           </SFilterButton>
         </SFilterWrap>
         <SDrinksWrap>
@@ -182,7 +177,6 @@ const Catalog = ({ history }) => {
       <Footer
         setOpenModalItemChoice={setOpenModalItemChoice}
         history={history}
-        user={user}
       />
     </>
   );
@@ -208,12 +202,10 @@ const SFilterButton = styled.button`
   border: none;
   width: calc(193 / 375 * 100vw);
   height: calc(28 / 375 * 100vw);
-  p {
-    font-size: calc(12 / 375 * 100vw);
-    letter-spacing: calc(3.6 / 375 * 100vw);
-    font-weight: 100;
-    border-radius: calc(4 / 375 * 100vw);
-  }
+  font-size: calc(12 / 375 * 100vw);
+  letter-spacing: calc(3.6 / 375 * 100vw);
+  font-weight: 100;
+  border-radius: calc(4 / 375 * 100vw);
 
   ${({ start, end }) =>
     start &&

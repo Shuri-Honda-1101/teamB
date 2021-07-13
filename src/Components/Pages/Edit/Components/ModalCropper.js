@@ -3,7 +3,7 @@ import ReactCrop from "react-image-crop";
 import "react-image-crop/dist/ReactCrop.css";
 import { useCallback, useState } from "react";
 import { useRef } from "react";
-import shortid from "shortid";
+import { nanoid } from "nanoid";
 
 const ModalCropper = ({
   setImageUrl,
@@ -55,7 +55,7 @@ const ModalCropper = ({
     return new Promise((resolve, reject) => {
       canvas.toBlob(
         (blob) => {
-          blob.name = shortid.generate();
+          blob.name = nanoid();
           resolve(blob);
         },
         "image/jpeg",

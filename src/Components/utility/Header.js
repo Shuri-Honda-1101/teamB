@@ -21,6 +21,7 @@ const SHeaderWrap = styled.header`
   position: fixed;
   top: 0; /* 上下の固定位置を上から0pxにする */
   left: 0; /* 左右の固定位置を左から0pxにする */
+  z-index: 2;
 `;
 
 const SLogoImg = styled.img`

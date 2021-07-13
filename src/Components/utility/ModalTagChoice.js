@@ -3,7 +3,7 @@ import styled from "styled-components";
 import UserTagListItem from "./UserTagListItem";
 import firebase from "../../config/firebase";
 import { useEffect } from "react";
-import shortid from "shortid";
+import { nanoid } from "nanoid";
 
 const ModalTagChoice = ({
   user,
@@ -29,10 +29,7 @@ const ModalTagChoice = ({
   const addTags = (e) => {
     e.preventDefault();
     if (tagText === "") return;
-    setUserTags([
-      ...userTags,
-      { tag: tagText, id: shortid.generate(), trigger: false },
-    ]);
+    setUserTags([...userTags, { tag: tagText, id: nanoid(), trigger: false }]);
     setTagText("");
   };
 

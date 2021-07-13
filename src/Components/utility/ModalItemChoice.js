@@ -1,10 +1,27 @@
-import { useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 import AllDrinkListItem from "./AllDrinkListItem";
+import { AuthContext } from "./AuthService";
+import firebase from "../../config/firebase";
 
-const ModalItemChoice = ({ drinks, setOpenModalItemChoice, history }) => {
+const ModalItemChoice = ({ setOpenModalItemChoice, history }) => {
   const [path, setPath] = useState(null);
+  const [drinks, setDrinks] = useState(null);
+  const user = useContext(AuthContext);
+
+  useEffect(() => {
+    if (user != null) {
+      const uidDB = firebase.firestore().collection("users").doc(user.uid);
+      //お酒一覧取得
+      uidDB.collection("drinks").onSnapshot((querySnapshot) => {
+        let drinks = querySnapshot.docs.map((doc) => {
+          return { ...doc.data(), id: doc.id };
+        });
+        setDrinks(drinks);
+      });
+    }
+  });
 
   //OKクリック時の処理
   const onClickPath = () => {
