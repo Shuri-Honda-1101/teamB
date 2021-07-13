@@ -10,6 +10,7 @@ import Footer from "../../utility/Footer";
 import styled from "styled-components";
 import Rating from "@material-ui/lab/Rating";
 import ModalItemChoice from "../../utility/ModalItemChoice";
+import { FontStyle } from "../../utility/Snippets";
 
 const Item = ({ history }) => {
   const [openModalItemChoice, setOpenModalItemChoice] = useState(false);
@@ -114,6 +115,7 @@ const SItemWrap = styled.section`
 const SNameRateWrap = styled.div`
   width: calc(302 / 375 * 100vw);
   h2 {
+    ${FontStyle}
     margin-top: calc(34 / 375 * 100vw);
     font-size: calc(17 / 375 * 100vw);
     font-weight: 400;
@@ -125,6 +127,7 @@ const SNameRateWrap = styled.div`
 const SRating = styled(Rating)`
   margin-top: calc(6 / 375 * 100vw);
   font-size: calc(24 / 375 * 100vw);
+  ${FontStyle}
   .MuiRating-icon {
     margin-right: calc(3 / 375 * 100vw);
   }
@@ -151,6 +154,7 @@ const SButton = styled.button`
   line-height: calc(37 / 375 * 100vw);
   font-size: calc(14 / 375 * 100vw);
   letter-spacing: calc(4.2 / 375 * 100vw);
+  ${FontStyle}
   font-weight: 100;
   :hover {
     border: 1px solid #fff;

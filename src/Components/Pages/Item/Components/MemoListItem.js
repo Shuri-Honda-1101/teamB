@@ -1,75 +1,106 @@
-import { Link } from "react-router-dom";
-import { makeStyles } from "@material-ui/core/styles";
-import Accordion from "@material-ui/core/Accordion";
-import AccordionSummary from "@material-ui/core/AccordionSummary";
-import AccordionDetails from "@material-ui/core/AccordionDetails";
-import Typography from "@material-ui/core/Typography";
+// import { Link } from "react-router-dom";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import styled from "styled-components";
-
-const useStyles = makeStyles((theme) => ({
-  root: {
-    width: "100%",
-  },
-  heading: {
-    fontSize: theme.typography.pxToRem(15),
-    fontWeight: theme.typography.fontWeightRegular,
-  },
-}));
+import { FontStyle } from "../../../utility/Snippets";
+import { useState } from "react";
+import CreateIcon from "@material-ui/icons/Create";
+import DeleteIcon from "@material-ui/icons/Delete";
 
 const MemoListItem = ({ memo, id, date, drinkId }) => {
-  const classes = useStyles();
+  const [open, setOpen] = useState(false);
   return (
     <li>
-      <div className={classes.root}>
-        <SAccordion>
-          <AccordionSummary
-            expandIcon={<ExpandMoreIcon />}
-            aria-controls="panel1a-content"
-            id="panel1a-header"
+      <SAccordion>
+        <SAccordionContent>
+          <p>{date}</p>
+          <span
+            onClick={() => {
+              setOpen(!open);
+            }}
           >
-            <Typography className={classes.heading}>{date}</Typography>
-          </AccordionSummary>
-          <AccordionDetails>
-            <Typography>{memo}</Typography>
-            <Link to={`/edit/${drinkId}/${id}`}>編集</Link>
-            <button>削除</button>
-          </AccordionDetails>
-        </SAccordion>
-      </div>
+            <ExpandMoreIcon />
+          </span>
+        </SAccordionContent>
+        {open && (
+          <SAccordionDesc>
+            <p>{memo}</p>
+            <div>
+              <button>
+                <CreateIcon />
+              </button>
+              <button>
+                <DeleteIcon />
+              </button>
+            </div>
+          </SAccordionDesc>
+        )}
+      </SAccordion>
     </li>
   );
 };
 
-const SAccordion = styled(Accordion)`
+const SAccordion = styled.div`
   width: calc(302 / 375 * 100vw);
   background-color: #212121;
   color: #fff;
   margin-top: calc(13 / 375 * 100vw);
   border: 1px solid #ac966f;
   border-radius: calc(5 / 375 * 100vw);
-  .MuiAccordionSummary-root {
-    padding: 0;
-    height: calc(36 / 375 * 100vw);
-  }
-  .MuiTypography-root {
-    font-size: calc(13 / 375 * 100vw);
-    letter-spacing: calc(1.3 / 375 * 100vw);
-    font-family: "ヒラギノ角ゴシック";
-    font-weight: 100;
-    margin: 0 auto;
-  }
-  .MuiAccordionSummary-content {
-    margin: 0;
-  }
+`;
+
+const SAccordionContent = styled.div`
+  display: flex;
+  justify-content: center;
+  height: calc(36 / 375 * 100vw);
+  /* line-height: calc(36 / 375 * 100vw); */
+  align-items: center;
+  font-size: calc(13 / 375 * 100vw);
+  letter-spacing: calc(1.3 / 375 * 100vw);
+  ${FontStyle}
+  position:relative;
   .MuiSvgIcon-root {
+    font-size: calc(27 / 375 * 100vw);
     color: #ac966f;
-    font-size: calc(24 / 375 * 100vw);
+    position: absolute;
+    right: calc(15.5 / 375 * 100vw);
+    top: 15%;
   }
-  .MuiAccordionSummary-expandIcon {
-    padding: 0;
-    margin-right: calc(-24 / 375 * 100vw);
-    transform: translate(calc((-40.5) / 375 * 100vw), 0);
+`;
+
+const SAccordionDesc = styled.div`
+  border-top: 1px solid #ac966f;
+  display: flex;
+  flex-direction: column;
+  padding: calc(12 / 375 * 100vw);
+  p {
+    line-height: calc(20 / 12);
+    ${FontStyle}
+    letter-spacing: calc(1.2 / 375 * 100vw);
+    font-size: calc(12 / 375 * 100vw);
+  }
+  div {
+    margin-top: calc(16.75 / 375 * 100vw);
+    display: flex;
+    justify-content: center;
+    button {
+      border: 1px solid #5c5a5a;
+      border-radius: 50%;
+      padding: calc(4 / 375 * 100vw);
+      background-color: #212121;
+      :hover {
+        border: 1px solid #fff;
+        .MuiSvgIcon-root {
+          color: #fff;
+        }
+      }
+      :nth-of-type(1) {
+        margin-right: calc(14.1 / 375 * 100vw);
+      }
+    }
+    .MuiSvgIcon-root {
+      font-size: calc(27 / 375 * 100vw);
+      color: #5c5a5a;
+    }
   }
 `;
 
