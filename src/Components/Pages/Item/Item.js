@@ -95,7 +95,6 @@ const Item = ({ history }) => {
       <Footer
         setOpenModalItemChoice={setOpenModalItemChoice}
         history={history}
-        user={user}
       />
     </>
   );

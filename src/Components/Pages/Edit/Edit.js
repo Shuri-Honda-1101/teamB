@@ -14,6 +14,8 @@ import { makeStyles } from "@material-ui/core/styles";
 import Rating from "@material-ui/lab/Rating";
 import Box from "@material-ui/core/Box";
 import TextField from "@material-ui/core/TextField";
+import ModalItemChoice from "../../utility/ModalItemChoice";
+import AddCircleIcon from "@material-ui/icons/AddCircle";
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -24,7 +26,7 @@ const useStyles = makeStyles(() => ({
 const Edit = ({ history }) => {
   const classes = useStyles();
   const did = useParams().id;
-
+  const [openModalItemChoice, setOpenModalItemChoice] = useState(false);
   const [selectImageValue, setSelectImageValue] = useState("");
   const [imageUrl, setImageUrl] = useState(null);
   const inputImageRef = useRef(null);
@@ -237,6 +239,12 @@ const Edit = ({ history }) => {
   return (
     <>
       <Header />
+      {openModalItemChoice && (
+        <ModalItemChoice
+          setOpenModalItemChoice={setOpenModalItemChoice}
+          history={history}
+        />
+      )}
       {imageUrl && (
         <ModalCropper
           setImageUrl={setImageUrl}
@@ -254,9 +262,8 @@ const Edit = ({ history }) => {
           newTagInput={newTagInput}
         />
       )}
-      <SEditWrap>
-        <h1>ここはEditコンポーネントです</h1>
-        <form onSubmit={handleSubmit}>
+      <section>
+        <SEditWrap onSubmit={handleSubmit}>
           <div>
             <span>
               {/* imgタグはここに移動しました */}
@@ -267,6 +274,9 @@ const Edit = ({ history }) => {
                 alt="画像プレビュー"
               />
             </span>
+            <SAddIcon>
+              <AddCircleIcon />
+            </SAddIcon>
             <input
               hidden
               ref={inputImageRef}
@@ -278,7 +288,7 @@ const Edit = ({ history }) => {
           </div>
 
           <div>
-            {/* 　<span>レーティング：</span> */}
+            {/* <span>レーティング：</span> */}
             {/* onChangeを追加し、setRateします。 */}
 
             <Box component="fieldset" mb={3} borderColor="transparent">
@@ -397,17 +407,58 @@ const Edit = ({ history }) => {
               <SSaveButton type="submit">保存</SSaveButton>
             </div>
           </div>
-        </form>
-      </SEditWrap>
-      <Footer />
+        </SEditWrap>
+      </section>
+      <Footer
+        setOpenModalItemChoice={setOpenModalItemChoice}
+        history={history}
+      />
     </>
   );
 };
 
-const SEditWrap = styled.section`
+const SEditWrap = styled.form`
   background-color: #000;
   color: #fff;
-  padding: calc(10 / 375 * 100vw) calc(13 / 375 * 100vw);
+  margin-top: calc(46 / 375 * 100vw);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  img {
+    width: calc(225 / 375 * 100vw);
+    height: calc(225 / 375 * 100vw);
+    border-radius: calc(37 / 375 * 100vw);
+    filter: brightness(75%);
+  }
+`;
+
+const SAddIcon = styled.span`
+  position: absolute;
+  top: calc(92 / 375 * 100vw);
+  left: calc(169 / 375 * 100vw);
+  z-index: 1;
+  :before {
+    content: "";
+    background-color: #fff;
+    height: calc(22 / 375 * 100vw);
+    width: calc(22 / 375 * 100vw);
+    position: absolute;
+    border-radius: 50%;
+    top: calc(9 / 375 * 100vw);
+    left: calc(8 / 375 * 100vw);
+    z-index: -1;
+    filter: drop-shadow(
+      calc(1 / 375 * 100vw) calc(5 / 375 * 100vw) calc(3 / 375 * 100vw)
+        rgba(0, 0, 0, 0.5)
+    );
+  }
+  .MuiSvgIcon-root {
+    color: #000;
+    border-radius: 50%;
+    height: calc(38 / 375 * 100vw);
+    width: calc(38 / 375 * 100vw);
+  }
 `;
 
 const SAddButton = styled.button`

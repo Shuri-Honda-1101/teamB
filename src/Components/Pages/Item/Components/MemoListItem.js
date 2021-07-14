@@ -52,7 +52,6 @@ const SAccordionContent = styled.div`
   display: flex;
   justify-content: center;
   height: calc(36 / 375 * 100vw);
-  /* line-height: calc(36 / 375 * 100vw); */
   align-items: center;
   font-size: calc(13 / 375 * 100vw);
   letter-spacing: calc(1.3 / 375 * 100vw);
