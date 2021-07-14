@@ -16,6 +16,7 @@ import Box from "@material-ui/core/Box";
 import TextField from "@material-ui/core/TextField";
 import ModalItemChoice from "../../utility/ModalItemChoice";
 import AddCircleIcon from "@material-ui/icons/AddCircle";
+import { FontStyle } from "../../utility/Snippets";
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -291,15 +292,13 @@ const Edit = ({ history }) => {
             {/* <span>レーティング：</span> */}
             {/* onChangeを追加し、setRateします。 */}
 
-            <Box component="fieldset" mb={3} borderColor="transparent">
-              <Rating
-                name="simple-controlled"
-                value={rate}
-                onChange={(e, newRate) => {
-                  setRate(newRate);
-                }}
-              />
-            </Box>
+            <SRating
+              name="simple-controlled"
+              value={rate}
+              onChange={(e, newRate) => {
+                setRate(newRate);
+              }}
+            />
 
             {/* <input
             type="radio"
@@ -345,19 +344,22 @@ const Edit = ({ history }) => {
           <span>5</span> */}
           </div>
 
-          <div>
-            <span>タグ：</span>
-            <TagsList tags={choiceTagArray} />
+          {choiceTagArray.length >= 1 && (
+            <STagListWrap>
+              <TagsList tags={choiceTagArray} />
+            </STagListWrap>
+          )}
 
-            <SAddButton
+          <div>
+            <SButton
               type="button"
               onClick={() => {
                 setOpenModalTagChoice(true);
                 setNewTagInput(true);
               }}
             >
-              タグを追加する
-            </SAddButton>
+              タグを追加
+            </SButton>
           </div>
 
           <div className={classes.root}>
@@ -404,7 +406,7 @@ const Edit = ({ history }) => {
               }}
             />
             <div>
-              <SSaveButton type="submit">保存</SSaveButton>
+              <SButton type="submit">保存</SButton>
             </div>
           </div>
         </SEditWrap>
@@ -436,45 +438,66 @@ const SEditWrap = styled.form`
 const SAddIcon = styled.span`
   position: absolute;
   top: calc(92 / 375 * 100vw);
-  left: calc(169 / 375 * 100vw);
+  left: calc(165 / 375 * 100vw);
   z-index: 1;
   :before {
     content: "";
     background-color: #fff;
-    height: calc(22 / 375 * 100vw);
-    width: calc(22 / 375 * 100vw);
+    height: calc(30 / 375 * 100vw);
+    width: calc(30 / 375 * 100vw);
     position: absolute;
     border-radius: 50%;
     top: calc(9 / 375 * 100vw);
-    left: calc(8 / 375 * 100vw);
+    left: calc(10 / 375 * 100vw);
     z-index: -1;
     filter: drop-shadow(
-      calc(1 / 375 * 100vw) calc(5 / 375 * 100vw) calc(3 / 375 * 100vw)
-        rgba(0, 0, 0, 0.5)
+      calc(1 / 375 * 100vw) calc(4 / 375 * 100vw) calc(4 / 375 * 100vw)
+        rgba(0, 0, 0, 0.4)
     );
   }
   .MuiSvgIcon-root {
     color: #000;
     border-radius: 50%;
-    height: calc(38 / 375 * 100vw);
-    width: calc(38 / 375 * 100vw);
+    height: calc(45 / 375 * 100vw);
+    width: calc(45 / 375 * 100vw);
   }
 `;
 
-const SAddButton = styled.button`
-  background-color: #212121;
-  color: #ffffff;
-  border: none;
-  width: calc(193 / 375 * 100vw);
-  height: calc(28 / 375 * 100vw);
+const SRating = styled(Rating)`
+  margin-top: calc(43 / 375 * 100vw);
+  font-size: calc(38 / 375 * 100vw);
+  .MuiRating-icon {
+    margin-right: calc(3 / 375 * 100vw);
+  }
+  .MuiRating-iconFilled {
+    color: #ac966f;
+  }
+  .MuiRating-iconEmpty {
+    color: #414040;
+  }
 `;
 
-const SSaveButton = styled.button`
+const STagListWrap = styled.div`
+  margin-top: calc(43 / 375 * 100vw);
+`;
+
+const SButton = styled.button`
   background-color: #212121;
   color: #ffffff;
   border: none;
-  width: calc(193 / 375 * 100vw);
-  height: calc(28 / 375 * 100vw);
+  border-radius: calc(10 / 375 * 100vw);
+  width: calc(302 / 375 * 100vw);
+  height: calc(37 / 375 * 100vw);
+  margin-top: calc(43 / 375 * 100vw);
+  line-height: calc(37 / 375 * 100vw);
+  font-size: calc(14 / 375 * 100vw);
+  letter-spacing: calc(4.2 / 375 * 100vw);
+  ${FontStyle}
+  font-weight: 100;
+  :hover {
+    border: 1px solid #fff;
+    background-color: #414040;
+  }
 `;
 
 export default Edit;
