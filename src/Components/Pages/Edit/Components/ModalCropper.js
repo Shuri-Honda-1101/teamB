@@ -107,7 +107,7 @@ const ModalCropper = ({
 };
 
 const SModalWrap = styled.section`
-  z-index: 1;
+  z-index: 3;
   position: fixed;
   top: 0;
   left: 0;

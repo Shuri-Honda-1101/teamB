@@ -10,21 +10,18 @@ import { useRef } from "react";
 import Header from "../../utility/Header";
 import Footer from "../../utility/Footer";
 import styled from "styled-components";
-import { makeStyles } from "@material-ui/core/styles";
 import Rating from "@material-ui/lab/Rating";
-import Box from "@material-ui/core/Box";
-import TextField from "@material-ui/core/TextField";
-
-const useStyles = makeStyles(() => ({
-  root: {
-    width: "250px",
-  },
-}));
+import ModalItemChoice from "../../utility/ModalItemChoice";
+import AddCircleIcon from "@material-ui/icons/AddCircle";
+import { FontStyle } from "../../utility/Snippets";
+import CalendarTodayIcon from "@material-ui/icons/CalendarToday";
+import "date-fns";
+import { MuiPickersUtilsProvider, DatePicker } from "@material-ui/pickers";
+import DateFnsUtils from "@date-io/date-fns";
 
 const Edit = ({ history }) => {
-  const classes = useStyles();
   const did = useParams().id;
-
+  const [openModalItemChoice, setOpenModalItemChoice] = useState(false);
   const [selectImageValue, setSelectImageValue] = useState("");
   const [imageUrl, setImageUrl] = useState(null);
   const inputImageRef = useRef(null);
@@ -35,10 +32,7 @@ const Edit = ({ history }) => {
   const [croppedImage, setCroppedImage] = useState(null);
 
   //初期値を今日の日付にしておきます（本田）
-  const yyyy = new Date().getFullYear();
-  const mm = ("0" + (new Date().getMonth() + 1)).slice(-2);
-  const dd = ("0" + new Date().getDate()).slice(-2);
-  const [date, setDate] = useState(`${yyyy}-${mm}-${dd}`);
+  const [selectedDate, setSelectedDate] = useState(new Date());
 
   const [memo, setMemo] = useState("");
   //お酒の名前入力の空欄防止に追加したstate（本田）
@@ -137,7 +131,7 @@ const Edit = ({ history }) => {
           image: firebaseUrl,
           drink: nameText,
           rate: rate,
-          dates: [new Date(date)],
+          dates: [selectedDate],
         })
         .then((docRef) => {
           console.log("Document successfully written!");
@@ -146,7 +140,7 @@ const Edit = ({ history }) => {
             .add({
               //input dateのvalueはstring型なので、timestamp型に変換してsetします。
               // date: date,
-              date: new Date(date),
+              date: selectedDate,
               memo: memo,
             })
             .then(() => {
@@ -212,7 +206,7 @@ const Edit = ({ history }) => {
           image: firebaseUrl,
           drink: nameText,
           rate: rate,
-          dates: [new Date(date)],
+          dates: [selectedDate],
         })
         .then((docRef) => {
           console.log("Document successfully written!");
@@ -221,7 +215,7 @@ const Edit = ({ history }) => {
             .add({
               //input dateのvalueはstring型なので、timestamp型に変換してsetします。
               // date: date,
-              date: new Date(date),
+              date: selectedDate,
               memo: memo,
             })
             .then(() => {
@@ -236,62 +230,69 @@ const Edit = ({ history }) => {
 
   return (
     <>
-      <Header />
-      {imageUrl && (
-        <ModalCropper
-          setImageUrl={setImageUrl}
-          setSelectImageValue={setSelectImageValue}
-          imageUrl={imageUrl}
-          setPreviewImage={setPreviewImage}
-          setCroppedImage={setCroppedImage}
-        />
-      )}
-      {openModalTagChoice && (
-        <ModalTagChoice
-          user={user}
-          setOpenModalTagChoice={setOpenModalTagChoice}
-          setChoiceTagArray={setChoiceTagArray}
-          newTagInput={newTagInput}
-        />
-      )}
-      <SEditWrap>
-        <h1>ここはEditコンポーネントです</h1>
-        <form onSubmit={handleSubmit}>
-          <div>
-            <span>
-              {/* imgタグはここに移動しました */}
-              <img
-                src={previewImage}
-                onClick={() => inputImageRef.current.click()}
-                height={200}
-                alt="画像プレビュー"
+      <MuiPickersUtilsProvider utils={DateFnsUtils}>
+        <Header />
+        {openModalItemChoice && (
+          <ModalItemChoice
+            setOpenModalItemChoice={setOpenModalItemChoice}
+            history={history}
+          />
+        )}
+        {imageUrl && (
+          <ModalCropper
+            setImageUrl={setImageUrl}
+            setSelectImageValue={setSelectImageValue}
+            imageUrl={imageUrl}
+            setPreviewImage={setPreviewImage}
+            setCroppedImage={setCroppedImage}
+          />
+        )}
+        {openModalTagChoice && (
+          <ModalTagChoice
+            user={user}
+            setOpenModalTagChoice={setOpenModalTagChoice}
+            setChoiceTagArray={setChoiceTagArray}
+            newTagInput={newTagInput}
+          />
+        )}
+        <section>
+          <SEditWrap onSubmit={handleSubmit}>
+            <div>
+              <span>
+                {/* imgタグはここに移動しました */}
+                <img
+                  src={previewImage}
+                  onClick={() => inputImageRef.current.click()}
+                  height={200}
+                  alt="画像プレビュー"
+                />
+              </span>
+              <SAddIcon>
+                <AddCircleIcon />
+              </SAddIcon>
+              <input
+                hidden
+                ref={inputImageRef}
+                type="file"
+                accept="image/*"
+                value={selectImageValue}
+                onChange={onSelectFile}
               />
-            </span>
-            <input
-              hidden
-              ref={inputImageRef}
-              type="file"
-              accept="image/*"
-              value={selectImageValue}
-              onChange={onSelectFile}
-            />
-          </div>
+            </div>
 
-          <div>
-            {/* 　<span>レーティング：</span> */}
-            {/* onChangeを追加し、setRateします。 */}
+            <div>
+              {/* <span>レーティング：</span> */}
+              {/* onChangeを追加し、setRateします。 */}
 
-            <Box component="fieldset" mb={3} borderColor="transparent">
-              <Rating
+              <SRating
                 name="simple-controlled"
                 value={rate}
                 onChange={(e, newRate) => {
                   setRate(newRate);
                 }}
               />
-            </Box>
 
-            {/* <input
+              {/* <input
             type="radio"
             name="rating"
             value="1"
@@ -333,97 +334,217 @@ const Edit = ({ history }) => {
             onChange={(e) => setRate(Number(e.target.value))}
           />
           <span>5</span> */}
-          </div>
-
-          <div>
-            <span>タグ：</span>
-            <TagsList tags={choiceTagArray} />
-
-            <SAddButton
-              type="button"
-              onClick={() => {
-                setOpenModalTagChoice(true);
-                setNewTagInput(true);
-              }}
-            >
-              タグを追加する
-            </SAddButton>
-          </div>
-
-          <div className={classes.root}>
-            {/* <span>お酒：</span> */}
-            <TextField
-              type="name"
-              name="name"
-              //valueを追加しましょう
-              value={nameText}
-              label="お酒の名前"
-              onChange={(e) => {
-                // このsetValueはタグ部分で使われいるstateなので使いません。新しいstateを追加します。nameText。（本田）
-                // setValue(e.target.value);
-                setNameText(e.target.value);
-              }}
-            />
-          </div>
-          <div className={classes.root}>
-            {/* <span>日付：</span> */}
-            <TextField
-              type="date"
-              name="date"
-              label="日付"
-              //初期値を与えたいため、valueを追加します（本田）
-              value={date}
-              //初期値があるので、ここでそのままsetDateします。（本田）
-              onChange={(e) => {
-                setDate(e.target.value);
-              }}
-            />
-          </div>
-          <div>
-            {/* <span>メモ：</span> */}
-            <TextField
-              rows="10"
-              cols="40"
-              label="メモ"
-              // valueの追加、初期値いらないので無くても良いかも？(本田)
-              value={memo}
-              onChange={(e) => {
-                // このsetValueはタグ部分で使われいるstateなので使いません。memoは空欄で保存したい場合もあると思うので、必須入力にしません。そのため、ここでそのままsetMemoします（本田）
-                // setValue(e.target.value);
-                setMemo(e.target.value);
-              }}
-            />
-            <div>
-              <SSaveButton type="submit">保存</SSaveButton>
             </div>
-          </div>
-        </form>
-      </SEditWrap>
-      <Footer />
+
+            {choiceTagArray && choiceTagArray.length >= 1 && (
+              <STagListWrap>
+                <TagsList tags={choiceTagArray} />
+              </STagListWrap>
+            )}
+
+            <div>
+              <SButton
+                type="button"
+                onClick={() => {
+                  setOpenModalTagChoice(true);
+                  setNewTagInput(true);
+                }}
+              >
+                タグを追加
+              </SButton>
+            </div>
+
+            <div>
+              {/* <span>お酒：</span> */}
+              <SInput
+                type="name"
+                name="name"
+                //valueを追加しましょう
+                value={nameText}
+                placeholder="お酒の名前"
+                onChange={(e) => {
+                  // このsetValueはタグ部分で使われいるstateなので使いません。新しいstateを追加します。nameText。（本田）
+                  // setValue(e.target.value);
+                  setNameText(e.target.value);
+                }}
+              />
+            </div>
+            <SCalendarWrap>
+              <SDatePicker
+                disableToolbar
+                variant="inline"
+                format="yyyy/MM/dd"
+                value={selectedDate}
+                onChange={(date) => {
+                  //時刻があるとソートに支障が出るので、年月日のみに変更
+                  const yyyy = date.getFullYear();
+                  const mm = ("0" + (date.getMonth() + 1)).slice(-2);
+                  const dd = ("0" + date.getDate()).slice(-2);
+                  const YMD = new Date(`${yyyy}-${mm}-${dd}`);
+                  setSelectedDate(YMD);
+                }}
+              />
+              <span>
+                <CalendarTodayIcon />
+              </span>
+            </SCalendarWrap>
+            <div>
+              {/* <span>メモ：</span> */}
+              <STextarea
+                rows="10"
+                cols="40"
+                placeholder="メモ"
+                // valueの追加、初期値いらないので無くても良いかも？(本田)
+                value={memo}
+                onChange={(e) => {
+                  // このsetValueはタグ部分で使われいるstateなので使いません。memoは空欄で保存したい場合もあると思うので、必須入力にしません。そのため、ここでそのままsetMemoします（本田）
+                  // setValue(e.target.value);
+                  setMemo(e.target.value);
+                }}
+              />
+              <div>
+                <SButton type="submit">保存</SButton>
+              </div>
+            </div>
+          </SEditWrap>
+        </section>
+        <Footer
+          setOpenModalItemChoice={setOpenModalItemChoice}
+          history={history}
+        />
+      </MuiPickersUtilsProvider>
     </>
   );
 };
 
-const SEditWrap = styled.section`
+const SEditWrap = styled.form`
   background-color: #000;
   color: #fff;
-  padding: calc(10 / 375 * 100vw) calc(13 / 375 * 100vw);
+  margin-top: calc(46 / 375 * 100vw);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  img {
+    width: calc(225 / 375 * 100vw);
+    height: calc(225 / 375 * 100vw);
+    border-radius: calc(37 / 375 * 100vw);
+    filter: brightness(75%);
+  }
 `;
 
-const SAddButton = styled.button`
+const SAddIcon = styled.span`
+  position: absolute;
+  top: calc(92 / 375 * 100vw);
+  left: calc(165 / 375 * 100vw);
+  z-index: 1;
+  :before {
+    content: "";
+    background-color: #fff;
+    height: calc(30 / 375 * 100vw);
+    width: calc(30 / 375 * 100vw);
+    position: absolute;
+    border-radius: 50%;
+    top: calc(9 / 375 * 100vw);
+    left: calc(10 / 375 * 100vw);
+    z-index: -1;
+    filter: drop-shadow(
+      calc(1 / 375 * 100vw) calc(4 / 375 * 100vw) calc(4 / 375 * 100vw)
+        rgba(0, 0, 0, 0.4)
+    );
+  }
+  .MuiSvgIcon-root {
+    color: #000;
+    border-radius: 50%;
+    height: calc(45 / 375 * 100vw);
+    width: calc(45 / 375 * 100vw);
+  }
+`;
+
+const SRating = styled(Rating)`
+  margin-top: calc(43 / 375 * 100vw);
+  font-size: calc(38 / 375 * 100vw);
+  .MuiRating-icon {
+    margin-right: calc(3 / 375 * 100vw);
+  }
+  .MuiRating-iconFilled {
+    color: #ac966f;
+  }
+  .MuiRating-iconEmpty {
+    color: #414040;
+  }
+`;
+
+const STagListWrap = styled.div`
+  margin-top: calc(43 / 375 * 100vw);
+`;
+
+const SButton = styled.button`
   background-color: #212121;
   color: #ffffff;
   border: none;
-  width: calc(193 / 375 * 100vw);
-  height: calc(28 / 375 * 100vw);
+  border-radius: calc(10 / 375 * 100vw);
+  width: calc(302 / 375 * 100vw);
+  height: calc(37 / 375 * 100vw);
+  margin-top: calc(43 / 375 * 100vw);
+  line-height: calc(37 / 375 * 100vw);
+  font-size: calc(14 / 375 * 100vw);
+  letter-spacing: calc(4.2 / 375 * 100vw);
+  ${FontStyle}
+  font-weight: 100;
+  :hover {
+    border: 1px solid #fff;
+    background-color: #414040;
+  }
 `;
 
-const SSaveButton = styled.button`
-  background-color: #212121;
-  color: #ffffff;
-  border: none;
-  width: calc(193 / 375 * 100vw);
-  height: calc(28 / 375 * 100vw);
+const SInput = styled.input`
+  ${FontStyle}
+  font-size: calc(14 / 375 * 100vw);
+  letter-spacing: calc(1.4 / 375 * 100vw);
+  width: calc(302 / 375 * 100vw);
+  height: calc(41 / 375 * 100vw);
+  margin-top: calc(29.5 / 375 * 100vw);
+  padding: calc(13.5 / 375 * 100vw) 0 calc(13.5 / 375 * 100vw)
+    calc(7.5 / 375 * 100vw);
+  ::placeholder {
+    ${FontStyle}
+    color: #5c5a5a;
+  }
+`;
+
+const SCalendarWrap = styled.div`
+  position: relative;
+  .MuiSvgIcon-root {
+    position: absolute;
+    bottom: calc(12 / 375 * 100vw);
+    right: calc(7.5 / 375 * 100vw);
+    color: #a8a6a6;
+    font-size: calc(20 / 375 * 100vw);
+  }
+`;
+
+const STextarea = styled(SInput.withComponent("textarea"))`
+  height: calc(300 / 375 * 100vw);
+`;
+
+const SDatePicker = styled(DatePicker)`
+  width: calc(302 / 375 * 100vw);
+  height: calc(27.5 / 375 * 100vw);
+  margin-top: calc(43 / 375 * 100vw);
+  border-bottom: 1px solid #707070;
+  .MuiInputBase-root {
+    input {
+      ${FontStyle}
+      font-size: calc(14 / 375 * 100vw);
+      letter-spacing: calc(2.1 / 375 * 100vw);
+      color: #fff;
+      padding: 0 0 calc(13.5 / 375 * 100vw) calc(7.5 / 375 * 100vw);
+    }
+  }
+  .MuiSvgIcon-root {
+    color: #fff;
+  }
 `;
 
 export default Edit;

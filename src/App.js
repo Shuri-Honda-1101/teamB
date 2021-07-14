@@ -52,6 +52,12 @@ body{
   padding: calc(62 / 375 * 100vw) 0 calc(48 / 375 * 100vw) 0;
   background-color: #000;
   color: #fff;
+  input,textarea{
+  background-color: #000;
+  color: #fff;
+  border:none;
+  border-bottom:1px solid #707070;
+  }
 
   /* font-family:"ヒラギノ丸ゴ Pro W4","ヒラギノ丸ゴ Pro","Hiragino Maru Gothic Pro","ヒラギノ角ゴ Pro W3","Hiragino Kaku Gothic Pro","HG丸ｺﾞｼｯｸM-PRO","HGMaruGothicMPRO"; */
 }
