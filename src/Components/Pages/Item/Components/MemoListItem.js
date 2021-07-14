@@ -86,6 +86,8 @@ const SAccordionDesc = styled.div`
       border-radius: 50%;
       padding: calc(4 / 375 * 100vw);
       background-color: #212121;
+      display: flex;
+      align-items: center;
       :hover {
         border: 1px solid #fff;
         .MuiSvgIcon-root {
