@@ -26,6 +26,7 @@ const ModalItemChoice = ({ setOpenModalItemChoice, history }) => {
   //OKクリック時の処理
   const onClickPath = () => {
     if (path !== null) {
+      setOpenModalItemChoice(false);
       history.push(`/edit/${path}`);
     } else {
       alert("お酒が選択されていません");
@@ -60,7 +61,13 @@ const ModalItemChoice = ({ setOpenModalItemChoice, history }) => {
           <button onClick={onClickPath}>OK</button>
           <p>もしくは</p>
           <Link to="/new">
-            <button>新しく追加する</button>
+            <button
+              onClick={() => {
+                setOpenModalItemChoice(false);
+              }}
+            >
+              新しく追加する
+            </button>
           </Link>
         </SModalInner>
       </SModalWrap>

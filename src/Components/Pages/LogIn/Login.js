@@ -24,6 +24,23 @@ const Login = ({ history }) => {
         console.log(err);
       });
   };
+
+  //Googleログイン
+  const onClickGoogle = async () => {
+    const provider = new firebase.auth.GoogleAuthProvider();
+    const result = await firebase
+      .auth()
+      .signInWithPopup(provider)
+      .then(() => {
+        return "成功";
+      })
+      .catch((err) => {
+        console.log(err);
+        return "失敗";
+      });
+    alert(`googleログインが${result}しました`);
+  };
+
   return (
     <>
       <h1>Login</h1>
@@ -56,6 +73,7 @@ const Login = ({ history }) => {
         </div>
         <button type="submit">Login</button>
       </form>
+      <button onClick={onClickGoogle}>Googleでログイン</button>
       <Link to="/signup">新規登録</Link>
     </>
   );

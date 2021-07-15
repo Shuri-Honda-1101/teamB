@@ -80,6 +80,7 @@ const Edit = ({ history }) => {
   const uploadImage = () => {
     if (previewImage === imageDefault) {
       alert("画像ファイルが選択されていません");
+      return;
     }
     //croppedImage(トリミング画像)がnullかどうかで処理を分けてください
     const uploadTask = storage
@@ -229,8 +230,8 @@ const Edit = ({ history }) => {
   };
 
   return (
-    <>
-      <MuiPickersUtilsProvider utils={DateFnsUtils}>
+    <MuiPickersUtilsProvider utils={DateFnsUtils}>
+      <>
         <Header />
         {openModalItemChoice && (
           <ModalItemChoice
@@ -412,8 +413,8 @@ const Edit = ({ history }) => {
           setOpenModalItemChoice={setOpenModalItemChoice}
           history={history}
         />
-      </MuiPickersUtilsProvider>
-    </>
+      </>
+    </MuiPickersUtilsProvider>
   );
 };
 
