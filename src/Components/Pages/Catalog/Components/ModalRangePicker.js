@@ -32,6 +32,14 @@ const ModalRangePicker = ({
           }}
         />
         <button onClick={() => setOpenModalRangePicker(false)}>OK</button>
+        <button
+          onClick={() => {
+            setStartDate(null);
+            setEndDate(null);
+          }}
+        >
+          クリア
+        </button>
       </SModalInner>
     </SModalWrap>
   );

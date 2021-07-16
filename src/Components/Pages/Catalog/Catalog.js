@@ -212,7 +212,7 @@ const SFilterButton = styled.button`
     end &&
     `border: 1px solid #fff;
   background-color: #414040;
-  letter-spacing: calc(1.2 / 375 * 100vw);
+  letter-spacing: calc(0.5 / 375 * 100vw);
   `}
   ${({ flag }) =>
     flag >= "1" &&
