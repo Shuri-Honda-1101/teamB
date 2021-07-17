@@ -24,7 +24,7 @@ const Footer = ({ setOpenModalItemChoice, history }) => {
       >
         <CreateIcon />
       </SButton>
-      <SButton>
+      <SButton onClick={() => history.push(`/config/${user.uid}`)}>
         <BuildIcon />
       </SButton>
     </SFooterWrap>

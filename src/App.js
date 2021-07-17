@@ -4,7 +4,7 @@ import Item from "./Components/Pages/Item/Item";
 import Catalog from "./Components/Pages/Catalog/Catalog";
 import SignUp from "./Components/Pages/SignUp/SignUp";
 import Login from "./Components/Pages/LogIn/Login";
-// import firebase from "./config/firebase";
+import Config from "./Components/Pages/Config";
 import { AuthProvider } from "./Components/utility/AuthService";
 import LoggedInRoute from "./Components/utility/LoggedInRoute";
 import Home from "./Components/Pages/Home/Home";
@@ -28,6 +28,7 @@ const App = () => {
               path="/user/:uid/items/:did"
               component={Item}
             />
+            <LoggedInRoute exact path="/config/:uid" component={Config} />
             <Route exact path="/signup" component={SignUp} />
             <Route exact path="/login" component={Login} />
           </Switch>
