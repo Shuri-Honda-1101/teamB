@@ -11,14 +11,38 @@ import styled from "styled-components";
 import Rating from "@material-ui/lab/Rating";
 import ModalItemChoice from "../../utility/ModalItemChoice";
 import { FontStyle } from "../../utility/Snippets";
+import ModalDeleteMemo from "./Components/ModalDeleteMemo";
 
 const Item = ({ history }) => {
   const [openModalItemChoice, setOpenModalItemChoice] = useState(false);
   const [drinkData, setDrinkData] = useState(null);
   const [memos, setMemos] = useState(null);
+  const [openModalDeleteMemo, setOpenModalDeleteMemo] = useState(false);
+  const [deleteMemoId, setDeleteMemoId] = useState(null);
 
   const drinkId = useParams().did;
   const user = useContext(AuthContext);
+
+  //削除機能
+  const onClickDelete = async () => {
+    if (user != null) {
+      const uidDB = firebase.firestore().collection("users").doc(user.uid);
+      const drinkDoc = uidDB.collection("drinks").doc(drinkId);
+      const deleteMemo = await drinkDoc
+        .collection("memos")
+        .doc(deleteMemoId)
+        .delete()
+        .then(() => {
+          setOpenModalDeleteMemo(false);
+          return "メモ削除完了";
+        })
+        .catch((err) => {
+          console.log(err);
+          return "メモを削除できませんでした";
+        });
+      alert(deleteMemo);
+    }
+  };
 
   useEffect(() => {
     if (user != null) {
@@ -50,6 +74,13 @@ const Item = ({ history }) => {
   return (
     <>
       <Header />
+      {openModalDeleteMemo && (
+        <ModalDeleteMemo
+          setOpenModalDeleteMemo={setOpenModalDeleteMemo}
+          onClickDelete={onClickDelete}
+          setDeleteMemoId={setDeleteMemoId}
+        />
+      )}
       {openModalItemChoice && (
         <ModalItemChoice
           setOpenModalItemChoice={setOpenModalItemChoice}
@@ -79,6 +110,8 @@ const Item = ({ history }) => {
                 memos.map((memo) => {
                   return (
                     <MemoListItem
+                      setOpenModalDeleteMemo={setOpenModalDeleteMemo}
+                      setDeleteMemoId={setDeleteMemoId}
                       key={memo.id}
                       drinkId={drinkId}
                       id={memo.id}
