@@ -6,7 +6,14 @@ import { useState } from "react";
 import CreateIcon from "@material-ui/icons/Create";
 import DeleteIcon from "@material-ui/icons/Delete";
 
-const MemoListItem = ({ memo, id, date, drinkId }) => {
+const MemoListItem = ({
+  setDeleteMemoId,
+  setOpenModalDeleteMemo,
+  memo,
+  id,
+  date,
+  drinkId,
+}) => {
   const [open, setOpen] = useState(false);
   return (
     <li>
@@ -28,7 +35,12 @@ const MemoListItem = ({ memo, id, date, drinkId }) => {
               <button>
                 <CreateIcon />
               </button>
-              <button>
+              <button
+                onClick={() => {
+                  setDeleteMemoId(id);
+                  setOpenModalDeleteMemo(true);
+                }}
+              >
                 <DeleteIcon />
               </button>
             </div>
