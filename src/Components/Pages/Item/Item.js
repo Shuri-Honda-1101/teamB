@@ -11,14 +11,16 @@ import styled from "styled-components";
 import Rating from "@material-ui/lab/Rating";
 import ModalItemChoice from "../../utility/ModalItemChoice";
 import { FontStyle } from "../../utility/Snippets";
-import ModalDeleteMemo from "./Components/ModalDeleteMemo";
+import ModalDelete from "./Components/ModalDelete";
 
 const Item = ({ history }) => {
   const [openModalItemChoice, setOpenModalItemChoice] = useState(false);
   const [drinkData, setDrinkData] = useState(null);
   const [memos, setMemos] = useState(null);
-  const [openModalDeleteMemo, setOpenModalDeleteMemo] = useState(false);
+  const [openModalDelete, setOpenModalDelete] = useState(false);
   const [deleteMemoId, setDeleteMemoId] = useState(null);
+  const [deleteMessage, setDeleteMessage] = useState(null);
+  const [deleteDrinkId, setDeleteDrinkId] = useState(null);
 
   const drinkId = useParams().did;
   const user = useContext(AuthContext);
@@ -28,19 +30,34 @@ const Item = ({ history }) => {
     if (user != null) {
       const uidDB = firebase.firestore().collection("users").doc(user.uid);
       const drinkDoc = uidDB.collection("drinks").doc(drinkId);
-      const deleteMemo = await drinkDoc
-        .collection("memos")
-        .doc(deleteMemoId)
-        .delete()
-        .then(() => {
-          setOpenModalDeleteMemo(false);
-          return "メモ削除完了";
-        })
-        .catch((err) => {
-          console.log(err);
-          return "メモを削除できませんでした";
-        });
-      alert(deleteMemo);
+      if (deleteMemoId) {
+        const deleteMemo = await drinkDoc
+          .collection("memos")
+          .doc(deleteMemoId)
+          .delete()
+          .then(() => "メモを削除しました")
+          .catch((err) => {
+            console.log(err);
+            return "メモを削除できませんでした";
+          });
+        setOpenModalDelete(false);
+        setDeleteMemoId(null);
+        alert(deleteMemo);
+      } else if (deleteDrinkId) {
+        const deleteDrink = await drinkDoc
+          .delete()
+          .then(() => {
+            history.push(`/user/${user.uid}`);
+            return "お酒を削除しました";
+          })
+          .catch((err) => {
+            console.log(err);
+            return "お酒を削除できませんでした";
+          });
+        setOpenModalDelete(false);
+        setDeleteDrinkId(null);
+        alert(deleteDrink);
+      }
     }
   };
 
@@ -74,11 +91,14 @@ const Item = ({ history }) => {
   return (
     <>
       <Header />
-      {openModalDeleteMemo && (
-        <ModalDeleteMemo
-          setOpenModalDeleteMemo={setOpenModalDeleteMemo}
+      {openModalDelete && (
+        <ModalDelete
+          setOpenModalDelete={setOpenModalDelete}
           onClickDelete={onClickDelete}
           setDeleteMemoId={setDeleteMemoId}
+          deleteMessage={deleteMessage}
+          setDeleteMessage={setDeleteMessage}
+          setDeleteDrinkId={setDeleteDrinkId}
         />
       )}
       {openModalItemChoice && (
@@ -110,19 +130,28 @@ const Item = ({ history }) => {
                 memos.map((memo) => {
                   return (
                     <MemoListItem
-                      setOpenModalDeleteMemo={setOpenModalDeleteMemo}
+                      setOpenModalDelete={setOpenModalDelete}
                       setDeleteMemoId={setDeleteMemoId}
                       key={memo.id}
                       drinkId={drinkId}
                       id={memo.id}
                       memo={memo.memo}
                       date={memo.YMDDate}
+                      setDeleteMessage={setDeleteMessage}
                     />
                   );
                 })}
             </ul>
           </div>
-          <SButton>まとめて削除</SButton>
+          <SButton
+            onClick={() => {
+              setDeleteMessage("お酒");
+              setOpenModalDelete(true);
+              setDeleteDrinkId(drinkId);
+            }}
+          >
+            まとめて削除
+          </SButton>
         </SItemWrap>
       )}
       <Footer

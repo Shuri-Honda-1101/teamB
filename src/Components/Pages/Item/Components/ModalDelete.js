@@ -1,20 +1,25 @@
 import styled from "styled-components";
 
-const ModalDeleteMemo = ({
-  setOpenModalDeleteMemo,
+const ModalDelete = ({
+  setOpenModalDelete,
   onClickDelete,
   setDeleteMemoId,
+  deleteMessage,
+  setDeleteMessage,
+  setDeleteDrinkId,
 }) => {
   return (
     <>
       <SModalWrap>
         <SModalInner>
-          <p>メモを削除しますか？</p>
+          <p>この{deleteMessage}を削除しますか？</p>
           <button onClick={onClickDelete}>はい</button>
           <button
             onClick={() => {
               setDeleteMemoId(null);
-              setOpenModalDeleteMemo(false);
+              setOpenModalDelete(false);
+              setDeleteMessage(null);
+              setDeleteDrinkId(null);
             }}
           >
             いいえ
@@ -46,4 +51,4 @@ const SModalInner = styled.div`
   border-radius: calc(65 / 1920 * 100vw);
 `;
 
-export default ModalDeleteMemo;
+export default ModalDelete;
