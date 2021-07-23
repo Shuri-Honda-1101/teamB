@@ -160,19 +160,6 @@ const Catalog = ({ history }) => {
               })}
           </ul>
         </SDrinksWrap>
-        <button
-          onClick={() => {
-            firebase
-              .auth()
-              .signOut()
-              .then(() => history.push("/login"))
-              .catch((err) => {
-                console.log(err);
-              });
-          }}
-        >
-          ログアウト
-        </button>
       </SCatalogWrap>
       <Footer
         setOpenModalItemChoice={setOpenModalItemChoice}
