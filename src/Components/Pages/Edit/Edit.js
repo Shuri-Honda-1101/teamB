@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import TagsList from "../../utility/TagsList";
 import firebase, { storage } from "../../../config/firebase";
 import { useParams } from "react-router-dom";
@@ -41,21 +41,30 @@ const Edit = ({ history }) => {
   const [choiceTagArray, setChoiceTagArray] = useState(null);
   const [newTagInput, setNewTagInput] = useState(false);
 
-  //今後のタスクで必要な処理です。（本田）
   //didがundefinedの時は新規作成、IDが入っている時はお酒の名前とレートのデフォルト入力をfirestoreから取ってきた値にして、保存時にアップデート処理をしてください（本田）
-  // const {id} = useParams();
-
-  // db.collection('users').get().then((querySnapshot) => {
-  //   querySnapshot.forEach((doc) => {
-  //     console.log(doc.id, "=>", doc.data());
-  //   })
-  // })
 
   console.log(did);
 
   const user = useContext(AuthContext);
   const db = firebase.firestore();
   console.log(db);
+
+  useEffect(() => {
+    if (did === undefined) {
+      return;
+    } else {
+      const userRef = db.collection("users").doc(user.uid);
+      const drinkDB = userRef.collection("drinks").doc(did);
+      drinkDB.onSnapshot((doc) => {
+        const drink = { ...doc.data(), id: doc.id };
+        console.log(doc.data());
+        setPreviewImage(drink.image);
+        setRate(drink.rate);
+        setNameText(drink.drink);
+        setChoiceTagArray(drink.tags);
+      });
+    }
+  }, []);
 
   //画像をアップロード
   const onSelectFile = (e) => {
@@ -154,79 +163,45 @@ const Edit = ({ history }) => {
     }
   };
 
-  //rateのinputタグに入れました。（本田）
-  // const handleRate = () => {};
-
-  //メモを入力
-  //メモは空欄でも大丈夫なので、メモinputタグにまとめました（本田）
-  // const addMemo = () => {
-  //   if (value === "") return;
-  //   setMemo(value);
-  // };
-
-  //handleSubmitに処理を移動しました（本田）
-  //お酒の名前を入力時に空欄を防止してnameにセットする処理
-  // const drinkName = () => {
-  //   //このままだと、空欄時になぜ保存されなかったかユーザーがわからない為、アラートを出します（本田）
-  //   // if (value === "") return;
-  //   if (nameText === "") {
-  //     alert("保存に失敗しました。お酒の名前は必須入力欄です");
-  //     return;
-  //   }
-  //   //ここもnameTextに変更します（本田）
-  //   // setName(value);
-  //   setName(nameText);
-  // };
-
-  //inputタグで処理を書くため不要（本田）
-  // const addDate = () => {
-  //   setDate(date);
-  // };
-
-  const handleSubmit = (e, firebaseUrl) => {
-    const userRef = db.collection("users").doc(user.uid);
+  const handleSubmit = (e) => {
+    // const userRef = db.collection("users").doc(user.uid);
     e.preventDefault();
-    if (did === undefined) {
-      if (nameText === "") {
-        alert("保存に失敗しました。お酒の名前は必須入力欄です");
-        return;
-      } else {
-        // drinkName();
-        uploadImage();
-        //addMemoは不要になったので消します（本田）
-        // addMemo();
-        //こちらも不要なので消します（本田）
-        // addDate()
-      }
+    // if (did === undefined) {
+    if (nameText === "") {
+      alert("保存に失敗しました。お酒の名前は必須入力欄です");
+      return;
     } else {
-      userRef
-        .collection("drinks")
-        .doc(did)
-        .update({
-          tags: choiceTagArray,
-          image: firebaseUrl,
-          drink: nameText,
-          rate: rate,
-          dates: [selectedDate],
-        })
-        .then((docRef) => {
-          console.log("Document successfully written!");
-          docRef
-            .collection("memos")
-            .add({
-              //input dateのvalueはstring型なので、timestamp型に変換してsetします。
-              // date: date,
-              date: selectedDate,
-              memo: memo,
-            })
-            .then(() => {
-              history.push(`/user/${user.uid}`);
-            });
-        })
-        .catch((error) => {
-          console.log("Error writing document: ", error);
-        });
+      uploadImage();
     }
+    // } else {
+    //   userRef
+    //     .collection("drinks")
+    //     .doc(did)
+    //     .update({
+    //       tags: choiceTagArray,
+    //       image: firebaseUrl,
+    //       drink: nameText,
+    //       rate: rate,
+    //       dates: [selectedDate],
+    //     })
+    //     .then((docRef) => {
+    //       console.log("Document successfully written!");
+    //       docRef
+    //         .collection("memos")
+    //         .add({
+    //           //input dateのvalueはstring型なので、timestamp型に変換してsetします。
+    //           // date: date,
+    //           date: selectedDate,
+    //           memo: memo,
+    //         })
+    //         .then(() => {
+    //           history.push(`/user/${user.uid}`);
+    //         });
+    //     })
+    //     .catch((error) => {
+    //       console.log("Error writing document: ", error);
+    //     });
+    // }
   };
 
   return (
