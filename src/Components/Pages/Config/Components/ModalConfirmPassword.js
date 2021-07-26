@@ -2,14 +2,13 @@ import { useState, useRef, useContext } from "react";
 import styled from "styled-components";
 import { AuthContext } from "../../../utility/AuthService";
 
-const ModalUpdateEmail = ({ setOpen, setOpenConfirm }) => {
-  const user = useContext(AuthContext);
+const ModalConfirmPassword = ({ setOpen }) => {
   const modalRef = useRef(null);
-  const [email, setEmail] = useState(user.email);
+  const [password, setPassword] = useState("");
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    setOpenConfirm(true);
+    return;
   };
 
   return (
@@ -22,17 +21,17 @@ const ModalUpdateEmail = ({ setOpen, setOpenConfirm }) => {
         }}
       >
         <SModalInner ref={modalRef}>
-          <h1>メールアドレス変更</h1>
+          <h1>パスワード確認</h1>
           <form onSubmit={handleSubmit}>
             <div>
               <input
-                type="email"
-                id="email"
-                name="email"
-                placeholder="メールアドレス"
-                value={email}
+                type="password"
+                id="password"
+                name="password"
+                placeholder="パスワード"
+                value={password}
                 onChange={(e) => {
-                  setEmail(e.target.value);
+                  setPassword(e.target.value);
                 }}
               />
             </div>
@@ -45,7 +44,7 @@ const ModalUpdateEmail = ({ setOpen, setOpenConfirm }) => {
 };
 
 const SModalWrap = styled.section`
-  z-index: 3;
+  z-index: 4;
   position: fixed;
   top: 0;
   left: 0;
@@ -61,8 +60,8 @@ const SModalInner = styled.div`
   color: #000;
   background-color: #fffffe;
   width: calc(1500 / 1920 * 100vw);
-  height: calc(1900 / 1920 * 100vw);
+  height: calc(1500 / 1920 * 100vw);
   border-radius: calc(65 / 1920 * 100vw);
 `;
 
-export default ModalUpdateEmail;
+export default ModalConfirmPassword;

@@ -4,10 +4,13 @@ import firebase from "../../../config/firebase";
 import { useState } from "react";
 import ModalUpdateEmail from "./Components/ModalUpdateEmail";
 import ModalUpdatePassword from "./Components/ModalUpdatePassword";
+import ModalConfirmPassword from "./Components/ModalConfirmPassword";
 
 const Config = ({ history }) => {
   const [openModalUpdateEmail, setOpenModalUpdateEmail] = useState(false);
   const [openModalUpdatePassword, setOpenModalUpdatePassword] = useState(false);
+  const [openModalConfirmPassword, setOpenModalConfirmPassword] =
+    useState(false);
 
   //ログアウト処理
   const onClickLogout = () => {
@@ -23,8 +26,14 @@ const Config = ({ history }) => {
   return (
     <>
       <Header />
+      {openModalConfirmPassword && (
+        <ModalConfirmPassword setOpen={setOpenModalConfirmPassword} />
+      )}
       {openModalUpdateEmail && (
-        <ModalUpdateEmail setOpen={setOpenModalUpdateEmail} />
+        <ModalUpdateEmail
+          setOpen={setOpenModalUpdateEmail}
+          setOpenConfirm={setOpenModalConfirmPassword}
+        />
       )}
       {openModalUpdatePassword && (
         <ModalUpdatePassword setOpen={setOpenModalUpdatePassword} />
