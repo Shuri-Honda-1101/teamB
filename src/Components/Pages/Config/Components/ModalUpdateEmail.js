@@ -3,6 +3,7 @@ import { useState, useRef, useContext } from "react";
 import styled from "styled-components";
 import { AuthContext } from "../../../utility/AuthService";
 import ModalConfirmPassword from "./ModalConfirmPassword";
+import firebase from "../../../../config/firebase";
 
 const ModalUpdateEmail = ({ setOpen, setOpenConfirm }) => {
   const user = useContext(AuthContext);
@@ -10,9 +11,10 @@ const ModalUpdateEmail = ({ setOpen, setOpenConfirm }) => {
   const [email, setEmail] = useState(user.email);
   const [openModalConfirmPassword, setOpenModalConfirmPassword] =
     useState(false);
-  const [password, setPassword] = useState("");
+  const [nowPassword, setNowPassword] = useState("");
   const [provider, setProvider] = useState(null);
 
+  //ログインプロバイダを取得する処理
   useEffect(() => {
     if (user !== null) {
       user.providerData.forEach((profile) => {
@@ -21,17 +23,59 @@ const ModalUpdateEmail = ({ setOpen, setOpenConfirm }) => {
     }
   }, [user]);
 
-  console.log(provider);
-
   //OKボタンを押した時の処理
   const onSubmitEmail = (e) => {
     e.preventDefault();
-    setOpenModalConfirmPassword(true);
+    if (email !== user.email) {
+      setOpenModalConfirmPassword(true);
+    } else {
+      setOpen(false);
+    }
   };
 
   //ModalConfirmPassword(パスワード確認)でOKを押した時の処理
-  const onSubmitConfirmPassword = (e) => {
+  const onSubmitConfirmPassword = async (e) => {
     e.preventDefault();
+    //ユーザーの再認証
+    const credential = await firebase.auth.EmailAuthProvider.credential(
+      user.email,
+      nowPassword
+    );
+    const credentialResult = await user
+      .reauthenticateWithCredential(credential)
+      .then(() => true)
+      .catch((err) => {
+        console.log(err);
+        alert("パスワードが間違っています");
+        setNowPassword("");
+        return;
+      });
+
+    //メールアドレスの更新
+    const updateResult =
+      credentialResult &&
+      (await user
+        .updateEmail(email)
+        .then(() => true)
+        .catch((err) => {
+          console.log(err);
+          alert("メールアドレスの変更に失敗しました");
+          return;
+        }));
+
+    //確認メールを送信する
+    updateResult &&
+      user
+        .sendEmailVerification()
+        .then(() => {
+          setOpen(false);
+          setOpenModalConfirmPassword(false);
+          alert("新しいメールアドレスに確認メール送信しました");
+        })
+        .catch((err) => {
+          console.log(err);
+          alert("確認メールを送信できませんでした");
+        });
   };
 
   return (
@@ -40,8 +84,8 @@ const ModalUpdateEmail = ({ setOpen, setOpenConfirm }) => {
         <ModalConfirmPassword
           setOpen={setOpenModalConfirmPassword}
           onSubmit={onSubmitConfirmPassword}
-          setPassword={setPassword}
-          password={password}
+          setPassword={setNowPassword}
+          password={nowPassword}
         />
       )}
       <SModalWrap
@@ -57,26 +101,26 @@ const ModalUpdateEmail = ({ setOpen, setOpenConfirm }) => {
               <p>{provider}でログインしているため、変更できません</p>
             </div>
           )}
-          {/* {provider !== "google.com" && ( */}
-          <div>
-            <h1>メールアドレス変更</h1>
-            <form onSubmit={onSubmitEmail}>
-              <div>
-                <input
-                  type="email"
-                  id="email"
-                  name="email"
-                  placeholder="メールアドレス"
-                  value={email}
-                  onChange={(e) => {
-                    setEmail(e.target.value);
-                  }}
-                />
-              </div>
-              <button type="submit">OK</button>
-            </form>
-          </div>
-          {/* )} */}
+          {provider === "password" && (
+            <div>
+              <h1>メールアドレス変更</h1>
+              <form onSubmit={onSubmitEmail}>
+                <div>
+                  <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    placeholder="メールアドレス"
+                    value={email}
+                    onChange={(e) => {
+                      setEmail(e.target.value);
+                    }}
+                  />
+                </div>
+                <button type="submit">OK</button>
+              </form>
+            </div>
+          )}
         </SModalInner>
       </SModalWrap>
     </>

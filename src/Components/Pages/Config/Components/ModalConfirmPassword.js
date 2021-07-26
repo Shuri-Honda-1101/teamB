@@ -2,12 +2,7 @@ import { useState, useRef, useContext } from "react";
 import styled from "styled-components";
 import { AuthContext } from "../../../utility/AuthService";
 
-const ModalConfirmPassword = ({
-  setOpen,
-  onSubmitConfirmPassword,
-  setPassword,
-  password,
-}) => {
+const ModalConfirmPassword = ({ setOpen, onSubmit, setPassword, password }) => {
   const modalRef = useRef(null);
 
   return (
@@ -21,7 +16,7 @@ const ModalConfirmPassword = ({
       >
         <SModalInner ref={modalRef}>
           <h1>パスワード確認</h1>
-          <form onSubmit={onSubmitConfirmPassword}>
+          <form onSubmit={onSubmit}>
             <div>
               <input
                 type="password"
