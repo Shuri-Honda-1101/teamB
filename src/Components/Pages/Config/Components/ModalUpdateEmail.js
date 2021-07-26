@@ -1,19 +1,49 @@
+import { useEffect } from "react";
 import { useState, useRef, useContext } from "react";
 import styled from "styled-components";
 import { AuthContext } from "../../../utility/AuthService";
+import ModalConfirmPassword from "./ModalConfirmPassword";
 
 const ModalUpdateEmail = ({ setOpen, setOpenConfirm }) => {
   const user = useContext(AuthContext);
   const modalRef = useRef(null);
   const [email, setEmail] = useState(user.email);
+  const [openModalConfirmPassword, setOpenModalConfirmPassword] =
+    useState(false);
+  const [password, setPassword] = useState("");
+  const [provider, setProvider] = useState(null);
 
-  const handleSubmit = (e) => {
+  useEffect(() => {
+    if (user !== null) {
+      user.providerData.forEach((profile) => {
+        setProvider(profile.providerId);
+      });
+    }
+  }, [user]);
+
+  console.log(provider);
+
+  //OKボタンを押した時の処理
+  const onSubmitEmail = (e) => {
     e.preventDefault();
-    setOpenConfirm(true);
+    setOpenModalConfirmPassword(true);
+  };
+
+  //ModalConfirmPassword(パスワード確認)でOKを押した時の処理
+  const onSubmitConfirmPassword = (e) => {
+    e.preventDefault();
   };
 
   return (
     <>
+      {openModalConfirmPassword && (
+        <ModalConfirmPassword
+          setOpen={setOpenModalConfirmPassword}
+          onSubmit={onSubmitConfirmPassword}
+          setPassword={setPassword}
+          password={password}
+        />
+      )}
       <SModalWrap
         onClick={(e) => {
           //モーダルウィンドウの外側がクリックされたか判定、外側なら閉じる
@@ -22,22 +52,31 @@ const ModalUpdateEmail = ({ setOpen, setOpenConfirm }) => {
         }}
       >
         <SModalInner ref={modalRef}>
-          <h1>メールアドレス変更</h1>
-          <form onSubmit={handleSubmit}>
+          {provider === "google.com" && (
             <div>
-              <input
-                type="email"
-                id="email"
-                name="email"
-                placeholder="メールアドレス"
-                value={email}
-                onChange={(e) => {
-                  setEmail(e.target.value);
-                }}
-              />
+              <p>{provider}でログインしているため、変更できません</p>
             </div>
-            <button type="submit">OK</button>
-          </form>
+          )}
+          {/* {provider !== "google.com" && ( */}
+          <div>
+            <h1>メールアドレス変更</h1>
+            <form onSubmit={onSubmitEmail}>
+              <div>
+                <input
+                  type="email"
+                  id="email"
+                  name="email"
+                  placeholder="メールアドレス"
+                  value={email}
+                  onChange={(e) => {
+                    setEmail(e.target.value);
+                  }}
+                />
+              </div>
+              <button type="submit">OK</button>
+            </form>
+          </div>
+          {/* )} */}
         </SModalInner>
       </SModalWrap>
     </>
