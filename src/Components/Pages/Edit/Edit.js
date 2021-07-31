@@ -64,7 +64,7 @@ const Edit = ({ history }) => {
         setChoiceTagArray(drink.tags);
       });
     }
-  }, []);
+  }, [db, did, user.uid]);
 
   //画像をアップロード
   const onSelectFile = (e) => {
