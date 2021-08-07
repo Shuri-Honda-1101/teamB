@@ -5,6 +5,7 @@ import styled from "styled-components";
 import { Button } from "@material-ui/core";
 import { AuthContext } from "./AuthService";
 import { useContext } from "react";
+import { withRouter } from "react-router-dom";
 
 const Footer = ({ setOpenModalItemChoice, history }) => {
   const user = useContext(AuthContext);
@@ -65,4 +66,4 @@ const SButton = styled(Button)`
   }
 `;
 
-export default Footer;
+export default withRouter(Footer);
