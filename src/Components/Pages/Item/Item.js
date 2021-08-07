@@ -21,6 +21,7 @@ const Item = ({ history }) => {
   const [deleteMemoId, setDeleteMemoId] = useState(null);
   const [deleteMessage, setDeleteMessage] = useState(null);
   const [deleteDrinkId, setDeleteDrinkId] = useState(null);
+  const [deleteMemoDate, setDeleteMemoDate] = useState(null);
 
   const drinkId = useParams().did;
   const user = useContext(AuthContext);
@@ -31,18 +32,31 @@ const Item = ({ history }) => {
       const uidDB = firebase.firestore().collection("users").doc(user.uid);
       const drinkDoc = uidDB.collection("drinks").doc(drinkId);
       if (deleteMemoId) {
-        const deleteMemo = await drinkDoc
+        const deleteMemoDateProcess = await drinkDoc
+          .update({
+            dates: firebase.firestore.FieldValue.arrayRemove(deleteMemoDate),
+          })
+          .then(() => true)
+          .catch((err) => {
+            console.log(err);
+            return false;
+          });
+        const deleteMemoProcess = await drinkDoc
           .collection("memos")
           .doc(deleteMemoId)
           .delete()
-          .then(() => "メモを削除しました")
+          .then(() => true)
           .catch((err) => {
             console.log(err);
-            return "メモを削除できませんでした";
+            return false;
           });
         setOpenModalDelete(false);
         setDeleteMemoId(null);
-        alert(deleteMemo);
+        if (deleteMemoDateProcess && deleteMemoProcess) {
+          alert("メモを削除しました");
+        } else {
+          alert("メモの削除に失敗しました");
+        }
       } else if (deleteDrinkId) {
         const deleteDrink = await drinkDoc
           .delete()
@@ -67,6 +81,7 @@ const Item = ({ history }) => {
       const drinkDoc = uidDB.collection("drinks").doc(drinkId);
       drinkDoc.onSnapshot((doc) => {
         const drinkData = { ...doc.data(), id: doc.id };
+        console.log(drinkData);
         setDrinkData(drinkData);
       });
       drinkDoc
@@ -130,6 +145,7 @@ const Item = ({ history }) => {
                 memos.map((memo) => {
                   return (
                     <MemoListItem
+                      setDeleteMemoDate={setDeleteMemoDate}
                       setOpenModalDelete={setOpenModalDelete}
                       setDeleteMemoId={setDeleteMemoId}
                       key={memo.id}
@@ -138,6 +154,7 @@ const Item = ({ history }) => {
                       memo={memo.memo}
                       date={memo.YMDDate}
                       setDeleteMessage={setDeleteMessage}
+                      timestamp={memo.date}
                     />
                   );
                 })}
