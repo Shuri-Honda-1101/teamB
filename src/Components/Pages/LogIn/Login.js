@@ -4,6 +4,11 @@ import { AuthContext } from "../../utility/AuthService";
 import { Redirect } from "react-router";
 import { Link } from "react-router-dom";
 import ModalForgetPassword from "./Components/ModalForgetPassword";
+import Header from "../../utility/Header";
+import styled from "styled-components";
+import { FontStyle } from "../../utility/Snippets";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faGoogle } from "@fortawesome/free-brands-svg-icons";
 
 const Login = ({ history }) => {
   const user = useContext(AuthContext);
@@ -64,6 +69,7 @@ const Login = ({ history }) => {
 
   return (
     <>
+      <Header />
       {openModalForgetPassword && (
         <ModalForgetPassword
           setOpenModalForgetPassword={setOpenModalForgetPassword}
@@ -72,15 +78,15 @@ const Login = ({ history }) => {
           onClickResetPasswordSubmit={onClickResetPasswordSubmit}
         />
       )}
-      <h1>Login</h1>
-      <form onSubmit={handleSubmit}>
+      <STitle>ログイン</STitle>
+      <SLoginWrap onSubmit={handleSubmit}>
         <div>
-          <label htmlFor="email">E-mail</label>
-          <input
+          <label htmlFor="email"></label>
+          <SInput
             type="email"
             id="email"
             name="email"
-            placeholder="Email"
+            placeholder="メールアドレス"
             value={email}
             onChange={(e) => {
               setEmail(e.target.value);
@@ -88,31 +94,134 @@ const Login = ({ history }) => {
           />
         </div>
         <div>
-          <label htmlFor="password">Password</label>
-          <input
+          <label htmlFor="password"></label>
+          <SInput
             type="password"
             id="password"
             name="password"
-            placeholder="password"
+            placeholder="パスワード"
             value={password}
             onChange={(e) => {
               setPassword(e.target.value);
             }}
           />
         </div>
-        <button type="submit">Login</button>
-      </form>
-      <button
+        <SLoginButton type="submit">ログイン</SLoginButton>
+      </SLoginWrap>
+      <SForgetButton
         onClick={() => {
           setOpenModalForgetPassword(true);
         }}
       >
         パスワードを忘れましたか？
-      </button>
-      <button onClick={onClickGoogle}>Googleでログイン</button>
-      <Link to="/signup">新規登録</Link>
+      </SForgetButton>
+      <SText>OR</SText>
+      <SButton onClick={onClickGoogle}>
+        <StyledIcon icon={faGoogle} size="lg" transform="left-40" />
+        Googleでログイン
+      </SButton>
+
+      <Link to="/signup">
+        <SButton>新規登録</SButton>
+      </Link>
     </>
   );
 };
+
+const STitle = styled.h1`
+  font-size: 17px;
+  text-align: center;
+  margin: 90px 0 50px 0;
+`;
+const SLoginWrap = styled.form`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
+
+const SInput = styled.input`
+  width: calc(302 / 375 * 100vw);
+  margin-bottom: calc(25 / 375 * 100vw);
+`;
+const SText = styled.p`
+  font-size: calc(15 / 375 * 100vw);
+  color: #ac966f;
+  text-align: center;
+  margin-top: calc(38 / 375 * 100vw);
+`;
+const SLoginButton = styled.button`
+  display: block;
+  margin: 0 auto;
+  background-color: #212121;
+  color: #ffffff;
+  border: none;
+  border-radius: calc(10 / 375 * 100vw);
+  width: calc(302 / 375 * 100vw);
+  height: calc(37 / 375 * 100vw);
+  margin-top: calc(43 / 375 * 100vw);
+  line-height: calc(37 / 375 * 100vw);
+  font-size: calc(14 / 375 * 100vw);
+  letter-spacing: calc(4.2 / 375 * 100vw);
+  margin-top: calc(16 / 375 * 100vw);
+`;
+
+const SButton = styled.button`
+  display: block;
+  margin: 0 auto;
+  background-color: #212121;
+  color: #ffffff;
+  border: none;
+  border-radius: calc(10 / 375 * 100vw);
+  width: calc(302 / 375 * 100vw);
+  height: calc(37 / 375 * 100vw);
+  margin-top: calc(43 / 375 * 100vw);
+  line-height: calc(37 / 375 * 100vw);
+  font-size: calc(14 / 375 * 100vw);
+  letter-spacing: calc(4.2 / 375 * 100vw);
+  position: relative;
+      :before {
+      content: "";
+      background-color: #5C5A5A;
+      height: calc(37 / 375 * 100vw);
+      width: calc(37 / 375 * 100vw);
+      position: absolute;
+      left: calc(0 / 375 * 100vw);
+      border-radius: 10px 0 0 10px;
+    }
+  
+  :last-child {
+    margin-top: calc(16 / 375 * 100vw);
+    :before {
+      content: "";
+      background-color: #212121;
+      height: calc(37 / 375 * 100vw);
+      width: calc(37 / 375 * 100vw);
+      position: absolute;
+      left: calc(0 / 375 * 100vw);
+      border-radius: 10px 0 0 10px;
+  }
+  ${FontStyle}
+  font-weight: 100;
+  :hover {
+    border: 1px solid #fff;
+    background-color: #414040;
+  }
+`;
+
+const SForgetButton = styled.button`
+  display: block;
+  margin: 0 auto;
+  color: #707070;
+  border: none;
+  background-color: transparent;
+  margin-top: calc(22 / 375 * 100vw);
+`;
+const StyledIcon = styled(FontAwesomeIcon)`
+  position: absolute;
+  top: calc(9 / 375 * 100vw);
+  left: calc(55 / 375 * 100vw);
+  color: #000;
+  z-index: 1;
+`;
 
 export default Login;
