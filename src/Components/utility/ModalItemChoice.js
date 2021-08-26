@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState, useRef } from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 import AllDrinkListItem from "./AllDrinkListItem";
@@ -9,6 +9,7 @@ const ModalItemChoice = ({ setOpenModalItemChoice, history }) => {
   const [path, setPath] = useState(null);
   const [drinks, setDrinks] = useState(null);
   const user = useContext(AuthContext);
+  const modalRef = useRef(null);
 
   useEffect(() => {
     if (user != null) {
@@ -35,16 +36,14 @@ const ModalItemChoice = ({ setOpenModalItemChoice, history }) => {
 
   return (
     <>
-      <SModalWrap>
-        <SModalInner>
-          <SBranchButton
-            onClick={() => {
-              setOpenModalItemChoice(false);
-            }}
-          >
-            戻る
-          </SBranchButton>
-          <p>どのお酒にメモを残しますか？</p>
+      <SModalWrap
+        onClick={(e) => {
+          if (modalRef.current.contains(e.target)) return;
+          setOpenModalItemChoice(false);
+        }}
+      >
+        <SModalInner ref={modalRef}>
+          <SModalInnerText>どのお酒にメモを残しますか？</SModalInnerText>
 
           <SModalInnerItem>
             {drinks &&
@@ -61,14 +60,14 @@ const ModalItemChoice = ({ setOpenModalItemChoice, history }) => {
           </SModalInnerItem>
 
           <SBranchButton onClick={onClickPath}>OK</SBranchButton>
-          <SFont>or</SFont>
+          <SFont>OR</SFont>
           <Link to="/new">
             <SBranchButton
               onClick={() => {
                 setOpenModalItemChoice(false);
               }}
             >
-              新しく追加する
+              新規作成
             </SBranchButton>
           </Link>
         </SModalInner>
@@ -99,7 +98,15 @@ const SModalInner = styled.div`
   text-align: center;
 `;
 
+const SModalInnerText = styled.p`
+  font-size: 15px;
+  margin: calc(32 / 375 * 100vw);
+`;
+
 const SModalInnerItem = styled.ul`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
   background-color: #212121;
   border-radius: calc(65 / 1920 * 100vw);
   width: calc(235 / 375 * 100vw);
@@ -107,6 +114,7 @@ const SModalInnerItem = styled.ul`
   border: 1px solid #ffffff;
   overflow: scroll;
   margin: 0 auto;
+  margin-bottom: calc(30 / 375 * 100vw);
 `;
 
 const SBranchButton = styled.button`
@@ -115,13 +123,13 @@ const SBranchButton = styled.button`
   border-radius: calc(65 / 1920 * 100vw);
   width: calc(235 / 375 * 100vw);
   height: calc(37 / 375 * 100vw);
-  margin-top: calc(20 / 375 * 100vw);
   border: none;
+  letter-spacing: 0.5em;
 `;
 const SFont = styled.p`
   font-size: calc(15 / 375 * 100vw);
   color: #ac966f;
-  margin-top: calc(10 / 375 * 100vw);
+  margin: calc(10 / 375 * 100vw);
 `;
 
 export default ModalItemChoice;

@@ -19,7 +19,7 @@ const AllDinkListItem = ({ drink, id, setPath }) => {
 // `
 const SItemButton = styled.button`
   background-color: #212121;
-  margin: 10px 20px;
+  height: calc(35 / 375 * 100vw);
   width: calc(198 / 375 * 100vw);
   color: #fff;
   border: none;

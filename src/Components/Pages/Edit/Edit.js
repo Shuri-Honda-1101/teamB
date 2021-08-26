@@ -173,35 +173,6 @@ const Edit = ({ history }) => {
     } else {
       uploadImage();
     }
-    // } else {
-    //   userRef
-    //     .collection("drinks")
-    //     .doc(did)
-    //     .update({
-    //       tags: choiceTagArray,
-    //       image: firebaseUrl,
-    //       drink: nameText,
-    //       rate: rate,
-    //       dates: [selectedDate],
-    //     })
-    //     .then((docRef) => {
-    //       console.log("Document successfully written!");
-    //       docRef
-    //         .collection("memos")
-    //         .add({
-    //           //input dateのvalueはstring型なので、timestamp型に変換してsetします。
-    //           // date: date,
-    //           date: selectedDate,
-    //           memo: memo,
-    //         })
-    //         .then(() => {
-    //           history.push(`/user/${user.uid}`);
-    //         });
-    //     })
-    //     .catch((error) => {
-    //       console.log("Error writing document: ", error);
-    //     });
-    // }
   };
 
   return (
