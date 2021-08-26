@@ -31,7 +31,9 @@ const Item = ({ history }) => {
     if (user != null) {
       const uidDB = firebase.firestore().collection("users").doc(user.uid);
       const drinkDoc = uidDB.collection("drinks").doc(drinkId);
+      //memo削除ボタンを押された時の処理
       if (deleteMemoId) {
+        //親ドキュメントの配列から削除する機能
         const deleteMemoDateProcess = await drinkDoc
           .update({
             dates: firebase.firestore.FieldValue.arrayRemove(deleteMemoDate),
@@ -41,6 +43,7 @@ const Item = ({ history }) => {
             console.log(err);
             return false;
           });
+        //メモドキュメントから削除する機能
         const deleteMemoProcess = await drinkDoc
           .collection("memos")
           .doc(deleteMemoId)
@@ -52,12 +55,14 @@ const Item = ({ history }) => {
           });
         setOpenModalDelete(false);
         setDeleteMemoId(null);
+        //どちらも成功したときに成功アラートを出す
         if (deleteMemoDateProcess && deleteMemoProcess) {
           alert("メモを削除しました");
         } else {
           alert("メモの削除に失敗しました");
         }
       } else if (deleteDrinkId) {
+        //まとめて削除を押された時の処理
         const deleteDrink = await drinkDoc
           .delete()
           .then(() => {
@@ -81,7 +86,6 @@ const Item = ({ history }) => {
       const drinkDoc = uidDB.collection("drinks").doc(drinkId);
       drinkDoc.onSnapshot((doc) => {
         const drinkData = { ...doc.data(), id: doc.id };
-        console.log(drinkData);
         setDrinkData(drinkData);
       });
       drinkDoc
@@ -97,7 +101,6 @@ const Item = ({ history }) => {
             const YMD = `${yyyy}/${mm}/${dd}`;
             return { ...doc.data(), id: doc.id, YMDDate: YMD };
           });
-          console.log(memos);
           setMemos(memos);
         });
     }

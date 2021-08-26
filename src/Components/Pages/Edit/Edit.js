@@ -148,7 +148,7 @@ const Edit = ({ history }) => {
     };
     const complete = () => {
       storage
-        .ref("images")
+        .ref("drinkImages")
         .child(croppedImage.name)
         .getDownloadURL()
         .then((firebaseUrl) => {
