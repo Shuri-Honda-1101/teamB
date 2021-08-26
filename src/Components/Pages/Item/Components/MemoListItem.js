@@ -9,11 +9,13 @@ import DeleteIcon from "@material-ui/icons/Delete";
 const MemoListItem = ({
   setDeleteMemoId,
   setOpenModalDelete,
+  setDeleteMemoDate,
   memo,
   id,
   date,
   drinkId,
   setDeleteMessage,
+  timestamp,
 }) => {
   const [open, setOpen] = useState(false);
   return (
@@ -41,6 +43,7 @@ const MemoListItem = ({
                   setDeleteMemoId(id);
                   setOpenModalDelete(true);
                   setDeleteMessage("メモ");
+                  setDeleteMemoDate(timestamp);
                 }}
               >
                 <DeleteIcon />

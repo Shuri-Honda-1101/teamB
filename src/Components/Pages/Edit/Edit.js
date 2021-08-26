@@ -1,12 +1,10 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState, useRef } from "react";
 import TagsList from "../../utility/TagsList";
 import firebase, { storage } from "../../../config/firebase";
 import { useParams } from "react-router-dom";
 import { AuthContext } from "../../utility/AuthService";
 import ModalTagChoice from "../../utility/ModalTagChoice";
 import ModalCropper from "./Components/ModalCropper";
-import imageDefault from "../../../img/imageDefault.png";
-import { useRef } from "react";
 import Header from "../../utility/Header";
 import Footer from "../../utility/Footer";
 import styled from "styled-components";
@@ -21,34 +19,26 @@ import DateFnsUtils from "@date-io/date-fns";
 
 const Edit = ({ history }) => {
   const did = useParams().id;
+  const user = useContext(AuthContext);
+  const db = firebase.firestore();
+  const userRef = db.collection("users").doc(user.uid);
+  const DefaultImageUrl =
+    "https://firebasestorage.googleapis.com/v0/b/teamb-d552c.appspot.com/o/imageDefault.png?alt=media&token=13e5f695-a9b8-49b3-84af-272202e0c0b4";
   const [openModalItemChoice, setOpenModalItemChoice] = useState(false);
   const [selectImageValue, setSelectImageValue] = useState("");
   const [imageUrl, setImageUrl] = useState(null);
   const inputImageRef = useRef(null);
-  //０レートは無いため、デフォルト値は3にしておきます。レンダリング時に、3にチェックが入っている必要があるため、inputタグにcheckedを追加します（本田）
-  const [rate, setRate] = useState(did ? 5 : 3);
-  //ここにプレビュー画像の初期値を入れます。存在する場合はその画像を、無い場合はimageDefaultを使うようにしてください
-  const [previewImage, setPreviewImage] = useState(did ? null : imageDefault);
+  const [rate, setRate] = useState(3);
+  const [previewImage, setPreviewImage] = useState(DefaultImageUrl);
   const [croppedImage, setCroppedImage] = useState(null);
-
-  //初期値を今日の日付にしておきます（本田）
   const [selectedDate, setSelectedDate] = useState(new Date());
-
   const [memo, setMemo] = useState("");
-  //お酒の名前入力の空欄防止に追加したstate（本田）
   const [nameText, setNameText] = useState("");
   const [openModalTagChoice, setOpenModalTagChoice] = useState(false);
   const [choiceTagArray, setChoiceTagArray] = useState(null);
   const [newTagInput, setNewTagInput] = useState(false);
 
-  //didがundefinedの時は新規作成、IDが入っている時はお酒の名前とレートのデフォルト入力をfirestoreから取ってきた値にして、保存時にアップデート処理をしてください（本田）
-
-  console.log(did);
-
-  const user = useContext(AuthContext);
-  const db = firebase.firestore();
-  console.log(db);
-
+  //did !== undefined つまり、お酒のIDが存在する時は初期値を与える処理
   useEffect(() => {
     if (did === undefined) {
       return;
@@ -57,7 +47,6 @@ const Edit = ({ history }) => {
       const drinkDB = userRef.collection("drinks").doc(did);
       drinkDB.onSnapshot((doc) => {
         const drink = { ...doc.data(), id: doc.id };
-        console.log(doc.data());
         setPreviewImage(drink.image);
         setRate(drink.rate);
         setNameText(drink.drink);
@@ -66,7 +55,7 @@ const Edit = ({ history }) => {
     }
   }, [db, did, user.uid]);
 
-  //画像をアップロード
+  //画像選択時の処理
   const onSelectFile = (e) => {
     if (e.target.files && e.target.files.length > 0) {
       const reader = new FileReader();
@@ -75,46 +64,63 @@ const Edit = ({ history }) => {
     }
   };
 
-  console.log(choiceTagArray);
-
-  const next = (snapshot) => {
-    const percent = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-    console.log(percent + "% done");
-    console.log(snapshot);
-  };
-  const error = (error) => {
-    console.log(error);
-  };
-
-  const uploadImage = () => {
-    if (previewImage === imageDefault) {
-      alert("画像ファイルが選択されていません");
-      return;
-    }
-    //croppedImage(トリミング画像)がnullかどうかで処理を分けてください
-    const uploadTask = storage
-      .ref(`/images/${croppedImage.name}`)
-      .put(croppedImage);
-    uploadTask.on(
-      firebase.storage.TaskEvent.STATE_CHANGED,
-      next,
-      error,
-      complete
-    );
-  };
-
-  const complete = () => {
-    storage
-      .ref("images")
-      .child(croppedImage.name)
-      .getDownloadURL()
-      .then((firebaseUrl) => {
-        pushDrinks(firebaseUrl);
-        pushTags();
+  //firestoreアップデートの関数
+  const updateDrink = (url) =>
+    userRef
+      .collection("drinks")
+      .doc(did)
+      .update({
+        tags: choiceTagArray,
+        image: url,
+        drink: nameText,
+        rate: rate,
+        dates: firebase.firestore.FieldValue.arrayUnion(selectedDate),
+      })
+      .then(() => {
+        userRef
+          .collection("drinks")
+          .doc(did)
+          .collection("memos")
+          .add({
+            date: selectedDate,
+            memo: memo,
+          })
+          .then(() => {
+            history.push(`/user/${user.uid}`);
+          });
+      })
+      .catch((error) => {
+        console.log("Error writing document: ", error);
       });
-  };
 
-  //Tagsコレクションに追加する処理
+  //firestore新規追加の関数
+  const addDrink = (url) =>
+    userRef
+      .collection("drinks")
+      .add({
+        tags: choiceTagArray,
+        image: url,
+        drink: nameText,
+        rate: rate,
+        dates: [selectedDate],
+      })
+      .then((docRef) => {
+        console.log("Document successfully written!");
+        docRef
+          .collection("memos")
+          .add({
+            date: selectedDate,
+            memo: memo,
+          })
+          .then(() => {
+            history.push(`/user/${user.uid}`);
+          });
+      })
+      .catch((error) => {
+        console.log("Error writing document: ", error);
+      });
+
+  //Tagsコレクションに追加する関数
   const pushTags = async () => {
     const uidDB = firebase.firestore().collection("users").doc(user.uid);
     const allTagsGet = await uidDB.collection("tags").get();
@@ -130,48 +136,59 @@ const Edit = ({ history }) => {
       });
   };
 
-  const pushDrinks = (firebaseUrl) => {
-    if (user !== null) {
-      const userRef = db.collection("users").doc(user.uid);
-
-      userRef
-        .collection("drinks")
-        .add({
-          tags: choiceTagArray,
-          image: firebaseUrl,
-          drink: nameText,
-          rate: rate,
-          dates: [selectedDate],
-        })
-        .then((docRef) => {
-          console.log("Document successfully written!");
-          docRef
-            .collection("memos")
-            .add({
-              //input dateのvalueはstring型なので、timestamp型に変換してsetします。
-              // date: date,
-              date: selectedDate,
-              memo: memo,
-            })
-            .then(() => {
-              history.push(`/user/${user.uid}`);
-            });
-        })
-        .catch((error) => {
-          console.log("Error writing document: ", error);
+  //画像アップロード→各種docにデータを追加する関数
+  const uploadImageAndDocData = () => {
+    const next = (snapshot) => {
+      const percent = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+      console.log(percent + "% done");
+      console.log(snapshot);
+    };
+    const error = (error) => {
+      console.log(error);
+    };
+    const complete = () => {
+      storage
+        .ref("drinkImages")
+        .child(croppedImage.name)
+        .getDownloadURL()
+        .then((firebaseUrl) => {
+          pushTags();
+          if (did) {
+            updateDrink(firebaseUrl);
+          } else {
+            addDrink(firebaseUrl);
+          }
         });
+    };
+    if (croppedImage) {
+      //トリミング後の画像がある場合は、画像のアップロード→データのアップロード
+      const uploadTask = storage
+        .ref(`/drinkImages/${croppedImage.name}`)
+        .put(croppedImage);
+      uploadTask.on(
+        firebase.storage.TaskEvent.STATE_CHANGED,
+        next,
+        error,
+        complete
+      );
+    } else {
+      //ない場合はそのままデフォルト画像でデータをアップロード
+      pushTags();
+      if (did) {
+        updateDrink(previewImage);
+      } else {
+        addDrink(previewImage);
+      }
     }
   };
 
   const handleSubmit = (e) => {
-    // const userRef = db.collection("users").doc(user.uid);
     e.preventDefault();
-    // if (did === undefined) {
     if (nameText === "") {
       alert("保存に失敗しました。お酒の名前は必須入力欄です");
       return;
     } else {
-      uploadImage();
+      uploadImageAndDocData();
     }
   };
 
@@ -206,7 +223,6 @@ const Edit = ({ history }) => {
           <SEditWrap onSubmit={handleSubmit}>
             <div>
               <span>
-                {/* imgタグはここに移動しました */}
                 <img
                   src={previewImage}
                   onClick={() => inputImageRef.current.click()}
@@ -228,9 +244,6 @@ const Edit = ({ history }) => {
             </div>
 
             <div>
-              {/* <span>レーティング：</span> */}
-              {/* onChangeを追加し、setRateします。 */}
-
               <SRating
                 name="simple-controlled"
                 value={rate}
@@ -238,49 +251,6 @@ const Edit = ({ history }) => {
                   setRate(newRate);
                 }}
               />
-
-              {/* <input
-            type="radio"
-            name="rating"
-            value="1"
-            //onChangeでユーザーが変更するとrateに各valueが入ります（ここは１のタグなので１が入る）（本田）
-            //rateが１の時は、ここにcheckを入れておいてくださいねという指示をcheckedで出します。（初期値の反映のため）（本田）
-            checked={rate === 1}
-            onChange={(e) => setRate(Number(e.target.value))}
-          />
-          <span>1</span>
-          <input
-            type="radio"
-            name="rating"
-            value="2"
-            checked={rate === 2}
-            onChange={(e) => setRate(Number(e.target.value))}
-          />
-          <span>2</span>
-          <input
-            type="radio"
-            name="rating"
-            value="3"
-            checked={rate === 3}
-            onChange={(e) => setRate(Number(e.target.value))}
-          />
-          <span>3</span>
-          <input
-            type="radio"
-            name="rating"
-            value="4"
-            checked={rate === 4}
-            onChange={(e) => setRate(Number(e.target.value))}
-          />
-          <span>4</span>
-          <input
-            type="radio"
-            name="rating"
-            value="5"
-            checked={rate === 5}
-            onChange={(e) => setRate(Number(e.target.value))}
-          />
-          <span>5</span> */}
             </div>
 
             {choiceTagArray && choiceTagArray.length >= 1 && (
@@ -302,20 +272,17 @@ const Edit = ({ history }) => {
             </div>
 
             <div>
-              {/* <span>お酒：</span> */}
               <SInput
                 type="name"
                 name="name"
-                //valueを追加しましょう
                 value={nameText}
                 placeholder="お酒の名前"
                 onChange={(e) => {
-                  // このsetValueはタグ部分で使われいるstateなので使いません。新しいstateを追加します。nameText。（本田）
-                  // setValue(e.target.value);
                   setNameText(e.target.value);
                 }}
               />
             </div>
+
             <SCalendarWrap>
               <SDatePicker
                 disableToolbar
@@ -335,17 +302,14 @@ const Edit = ({ history }) => {
                 <CalendarTodayIcon />
               </span>
             </SCalendarWrap>
+
             <div>
-              {/* <span>メモ：</span> */}
               <STextarea
                 rows="10"
                 cols="40"
                 placeholder="メモ"
-                // valueの追加、初期値いらないので無くても良いかも？(本田)
                 value={memo}
                 onChange={(e) => {
-                  // このsetValueはタグ部分で使われいるstateなので使いません。memoは空欄で保存したい場合もあると思うので、必須入力にしません。そのため、ここでそのままsetMemoします（本田）
-                  // setValue(e.target.value);
                   setMemo(e.target.value);
                 }}
               />
