@@ -31,7 +31,13 @@ const Config = ({ history }) => {
       )}
       <div>
         <h1>Configページ</h1>
-        <button>パスワード変更</button>
+        <button
+          onClick={() => {
+            setOpenModalUpdatePassword(true);
+          }}
+        >
+          パスワード変更
+        </button>
         <button
           onClick={() => {
             setOpenModalUpdateEmail(true);
