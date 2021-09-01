@@ -46,6 +46,13 @@ ${reset}
   font-weight: 200;
   font-family: "Hiragino Kaku Gothic ProN", "ヒラギノ角ゴ ProN W3", "Hiragino Sans", "ヒラギノ角ゴシック", sans-serif;
 }
+a{
+  text-decoration:none;
+}
+input,textarea{
+   -webkit-appearance: none;
+   border-radius: 0;
+}
 html{
   font-size: 62.5%;
 }
@@ -53,6 +60,8 @@ body{
   padding: calc(62 / 375 * 100vw) 0 calc(48 / 375 * 100vw) 0;
   background-color: #000;
   color: #fff;
+  font-family: "Hiragino Kaku Gothic ProN", "ヒラギノ角ゴ ProN W3",
+    "Hiragino Sans", "ヒラギノ角ゴシック", sans-serif;
   input,textarea{
   background-color: #000;
   color: #fff;
@@ -60,8 +69,6 @@ body{
   border-bottom:1px solid #707070;
   }
 
-  /* font-family:"ヒラギノ丸ゴ Pro W4","ヒラギノ丸ゴ Pro","Hiragino Maru Gothic Pro","ヒラギノ角ゴ Pro W3","Hiragino Kaku Gothic Pro","HG丸ｺﾞｼｯｸM-PRO","HGMaruGothicMPRO"; */
-}
 `;
 
 export default App;
