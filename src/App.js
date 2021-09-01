@@ -68,7 +68,7 @@ body{
   border:none;
   border-bottom:1px solid #707070;
   }
-
+}
 `;
 
 export default App;
