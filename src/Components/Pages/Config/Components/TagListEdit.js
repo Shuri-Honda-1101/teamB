@@ -20,10 +20,18 @@ export const FCTagListEdit = ({ className, setOpen }) => {
     });
   }, [user]);
 
+  //タグの追加処理
   const addTag = (e) => {
     e.preventDefault();
     if (tagText === "") return;
-    uidDoc.collection("tags").doc().set({ tag: tagText });
+    uidDoc
+      .collection("tags")
+      .doc()
+      .set({ tag: tagText })
+      .then(() => {
+        setTagText("");
+      })
+      .catch((err) => console.log(err));
   };
 
   const deleteTag = () => {
