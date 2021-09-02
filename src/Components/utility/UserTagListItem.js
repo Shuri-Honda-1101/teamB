@@ -5,7 +5,6 @@ const UserTagListItem = ({ tag }) => {
   const setTrigger = () => {
     tag.trigger = !tag.trigger;
     setTagTrigger(tag.trigger);
-    console.log(tag.trigger);
   };
   return (
     <li>
