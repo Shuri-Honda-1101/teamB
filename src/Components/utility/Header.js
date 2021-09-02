@@ -14,7 +14,7 @@ const Header = () => {
 const SHeaderWrap = styled.header`
   width: 100vw;
   background-color: #000000;
-  height: calc(62 / 375 * 100vw);
+  height: calc(62 / 667 * 100%);
   display: flex;
   justify-content: center;
   align-items: center;

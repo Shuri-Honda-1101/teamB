@@ -68,7 +68,7 @@ const Login = ({ history }) => {
   };
 
   return (
-    <>
+    <SWrap>
       <Header />
       {openModalForgetPassword && (
         <ModalForgetPassword
@@ -78,62 +78,76 @@ const Login = ({ history }) => {
           onClickResetPasswordSubmit={onClickResetPasswordSubmit}
         />
       )}
-      <STitle>ログイン</STitle>
-      <SLoginWrap onSubmit={handleSubmit}>
-        <div>
-          <label htmlFor="email"></label>
-          <SInput
-            type="email"
-            id="email"
-            name="email"
-            placeholder="メールアドレス"
-            value={email}
-            onChange={(e) => {
-              setEmail(e.target.value);
-            }}
-          />
-        </div>
-        <div>
-          <label htmlFor="password"></label>
-          <SInput
-            type="password"
-            id="password"
-            name="password"
-            placeholder="パスワード"
-            value={password}
-            onChange={(e) => {
-              setPassword(e.target.value);
-            }}
-          />
-        </div>
-        <SLoginButton type="submit">ログイン</SLoginButton>
-      </SLoginWrap>
-      <SForgetButton
-        onClick={() => {
-          setOpenModalForgetPassword(true);
-        }}
-      >
-        パスワードを忘れましたか？
-      </SForgetButton>
-      <SText>OR</SText>
-      <SButton onClick={onClickGoogle}>
-        <StyledIcon icon={faGoogle} size="lg" transform="left-40" />
-        Googleでログイン
-      </SButton>
+      <SLoginInner>
+        <SLoginForm onSubmit={handleSubmit}>
+          <STitle>ログイン</STitle>
+          <div>
+            <label htmlFor="email"></label>
+            <SInput
+              type="email"
+              id="email"
+              name="email"
+              placeholder="メールアドレス"
+              value={email}
+              onChange={(e) => {
+                setEmail(e.target.value);
+              }}
+            />
+          </div>
+          <div>
+            <label htmlFor="password"></label>
+            <SInput
+              type="password"
+              id="password"
+              name="password"
+              placeholder="パスワード"
+              value={password}
+              onChange={(e) => {
+                setPassword(e.target.value);
+              }}
+            />
+          </div>
+          <SLoginButton type="submit">ログイン</SLoginButton>
+        </SLoginForm>
+        <SForgetButton
+          onClick={() => {
+            setOpenModalForgetPassword(true);
+          }}
+        >
+          パスワードを忘れましたか？
+        </SForgetButton>
+        <SText>OR</SText>
+        <SButton onClick={onClickGoogle}>
+          <StyledIcon icon={faGoogle} size="lg" transform="left-40" />
+          Googleでログイン
+        </SButton>
 
-      <Link to="/signup">
-        <SButton>新規登録</SButton>
-      </Link>
-    </>
+        <Link to="/signup">
+          <SButton>新規登録</SButton>
+        </Link>
+      </SLoginInner>
+    </SWrap>
   );
 };
+
+const SWrap = styled.div`
+  height: calc((667 - 62) / 667 * 100vh);
+`;
+
+const SLoginInner = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 100%;
+`;
 
 const STitle = styled.h1`
   font-size: 17px;
   text-align: center;
-  margin: 90px 0 50px 0;
+  margin: 0 0 35.5px 0;
+  letter-spacing: 2.38px;
 `;
-const SLoginWrap = styled.form`
+const SLoginForm = styled.form`
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -141,10 +155,17 @@ const SLoginWrap = styled.form`
 
 const SInput = styled.input`
   width: calc(302 / 375 * 100vw);
-  margin-bottom: calc(25 / 375 * 100vw);
+  margin-bottom: calc(11.5 / 375 * 100vw);
+  padding: 10.5px 0 10.5px 7.5px;
+  ::placeholder {
+    color: #5c5a5a;
+    font-size: 14px;
+    letter-spacing: 1.4px;
+  }
 `;
 const SText = styled.p`
-  font-size: calc(15 / 375 * 100vw);
+  font-size: calc(14 / 375 * 100vw);
+  letter-spacing: 4.2px;
   color: #ac966f;
   text-align: center;
   margin-top: calc(38 / 375 * 100vw);
@@ -158,11 +179,10 @@ const SLoginButton = styled.button`
   border-radius: calc(10 / 375 * 100vw);
   width: calc(302 / 375 * 100vw);
   height: calc(37 / 375 * 100vw);
-  margin-top: calc(43 / 375 * 100vw);
   line-height: calc(37 / 375 * 100vw);
   font-size: calc(14 / 375 * 100vw);
   letter-spacing: calc(4.2 / 375 * 100vw);
-  margin-top: calc(16 / 375 * 100vw);
+  margin-top: calc(26 / 375 * 100vw);
 `;
 
 const SButton = styled.button`
@@ -174,21 +194,21 @@ const SButton = styled.button`
   border-radius: calc(10 / 375 * 100vw);
   width: calc(302 / 375 * 100vw);
   height: calc(37 / 375 * 100vw);
-  margin-top: calc(43 / 375 * 100vw);
+  margin-top: calc(38 / 375 * 100vw);
   line-height: calc(37 / 375 * 100vw);
   font-size: calc(14 / 375 * 100vw);
   letter-spacing: calc(4.2 / 375 * 100vw);
   position: relative;
-      :before {
-      content: "";
-      background-color: #5C5A5A;
-      height: calc(37 / 375 * 100vw);
-      width: calc(37 / 375 * 100vw);
-      position: absolute;
-      left: calc(0 / 375 * 100vw);
-      border-radius: 10px 0 0 10px;
-    }
-  
+  :before {
+    content: "";
+    background-color: #5c5a5a;
+    height: calc(37 / 375 * 100vw);
+    width: calc(37 / 375 * 100vw);
+    position: absolute;
+    left: calc(0 / 375 * 100vw);
+    border-radius: 10px 0 0 10px;
+  }
+
   :last-child {
     margin-top: calc(16 / 375 * 100vw);
     :before {
@@ -199,12 +219,13 @@ const SButton = styled.button`
       position: absolute;
       left: calc(0 / 375 * 100vw);
       border-radius: 10px 0 0 10px;
-  }
-  ${FontStyle}
-  font-weight: 100;
-  :hover {
-    border: 1px solid #fff;
-    background-color: #414040;
+    }
+    ${FontStyle}
+    font-weight: 100;
+    :hover {
+      border: 1px solid #fff;
+      background-color: #414040;
+    }
   }
 `;
 
@@ -215,6 +236,8 @@ const SForgetButton = styled.button`
   border: none;
   background-color: transparent;
   margin-top: calc(22 / 375 * 100vw);
+  font-size: 14px;
+  letter-spacing: 1.4px;
 `;
 const StyledIcon = styled(FontAwesomeIcon)`
   position: absolute;
