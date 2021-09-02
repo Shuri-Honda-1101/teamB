@@ -42,8 +42,6 @@ const ModalTagChoice = ({
     setChoiceTagArray(newResults);
   };
 
-  const onClickDelete = () => {};
-
   return (
     <>
       <SModalWrap>
@@ -68,7 +66,6 @@ const ModalTagChoice = ({
             </div>
           )}
           <button onClick={onClickOK}>OK</button>
-          <button onClick={onClickDelete}>削除</button>
         </SModalInner>
       </SModalWrap>
     </>
