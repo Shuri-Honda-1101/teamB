@@ -9,7 +9,6 @@ export const FCTagListEdit = ({ className, setOpen }) => {
   const [tagText, setTagText] = useState("");
   const user = useContext(AuthContext);
   const uidDoc = firebase.firestore().collection("users").doc(user.uid);
-  const [drinks, setDrinks] = useState(null);
 
   useEffect(() => {
     const uidDB = firebase.firestore().collection("users").doc(user.uid);
@@ -18,13 +17,6 @@ export const FCTagListEdit = ({ className, setOpen }) => {
         return { ...doc.data(), id: doc.id, trigger: false };
       });
       setUserTags(tags);
-    });
-
-    uidDB.collection("drinks").onSnapshot((querySnapshot) => {
-      let drinks = querySnapshot.docs.map((doc) => {
-        return { ...doc.data(), id: doc.id };
-      });
-      setDrinks(drinks);
     });
   }, [user]);
 
