@@ -1,3 +1,4 @@
+import { useRef } from "react";
 import styled from "styled-components";
 
 const ModalForgetPassword = ({
@@ -6,13 +7,20 @@ const ModalForgetPassword = ({
   setResetPasswordEmail,
   onClickResetPasswordSubmit,
 }) => {
+  const modalRef = useRef(null);
   return (
     <>
-      <SModalWrap>
-        <SModalInner>
-          <h1>パスワードの再設定</h1>
-          <form>
-            <input
+      <SModalWrap
+        onClick={(e) => {
+          if (modalRef.current.contains(e.target)) return;
+          setOpenModalForgetPassword(false);
+          setResetPasswordEmail("");
+        }}
+      >
+        <SModalInner ref={modalRef}>
+          <SMailForm>
+            <STitle>パスワード再設定メールを送信する</STitle>
+            <SInput
               type="email"
               id="email"
               name="email"
@@ -20,18 +28,10 @@ const ModalForgetPassword = ({
               placeholder="メールアドレス"
               onChange={(e) => setResetPasswordEmail(e.target.value)}
             />
-            <button type="submit" onClick={onClickResetPasswordSubmit}>
+            <SButton type="submit" onClick={onClickResetPasswordSubmit}>
               OK
-            </button>
-          </form>
-          <button
-            onClick={() => {
-              setOpenModalForgetPassword(false);
-              setResetPasswordEmail("");
-            }}
-          >
-            閉じる
-          </button>
+            </SButton>
+          </SMailForm>
         </SModalInner>
       </SModalWrap>
     </>
@@ -52,10 +52,36 @@ const SModalWrap = styled.section`
 `;
 
 const SModalInner = styled.div`
-  background-color: #fffffe;
-  width: calc(1500 / 1920 * 100vw);
-  height: calc(1900 / 1920 * 100vw);
-  border-radius: calc(65 / 1920 * 100vw);
+  background-color: #000;
+  height: calc(274 / 375 * 100vw);
+  width: calc(315 / 375 * 100vw);
+  border-radius: calc(35 / 375 * 100vw);
+  border: 1px solid #ac966f;
+  padding: 63px 0 59px 0;
+`;
+
+const SMailForm = styled.form`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
+const STitle = styled.h1`
+  font-size: 13px;
+`;
+const SInput = styled.input`
+  width: calc(237 / 375 * 100vw);
+  padding-bottom: calc(13.5 / 375 * 100vw);
+  margin: calc(37 / 375 * 100vw);
+`;
+const SButton = styled.button`
+  display: block;
+  margin: 0 auto;
+  background-color: #212121;
+  color: #ffffff;
+  border: none;
+  border-radius: calc(10 / 375 * 100vw);
+  width: calc(237 / 375 * 100vw);
+  height: calc(37 / 375 * 100vw);
 `;
 
 export default ModalForgetPassword;
