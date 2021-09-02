@@ -46,17 +46,19 @@ const ModalItemChoice = ({ setOpenModalItemChoice, history }) => {
           <SModalInnerText>どのお酒にメモを残しますか？</SModalInnerText>
 
           <SModalInnerItem>
-            {drinks &&
-              drinks.map((drink) => {
-                return (
-                  <AllDrinkListItem
-                    key={drink.id}
-                    id={drink.id}
-                    drink={drink.drink}
-                    setPath={setPath}
-                  />
-                );
-              })}
+            <ul>
+              {drinks &&
+                drinks.map((drink) => {
+                  return (
+                    <AllDrinkListItem
+                      key={drink.id}
+                      id={drink.id}
+                      drink={drink.drink}
+                      setPath={setPath}
+                    />
+                  );
+                })}
+            </ul>
           </SModalInnerItem>
 
           <SBranchButton onClick={onClickPath}>OK</SBranchButton>
@@ -100,21 +102,25 @@ const SModalInner = styled.div`
 
 const SModalInnerText = styled.p`
   font-size: 15px;
+  letter-spacing: 1.5px;
   margin: calc(32 / 375 * 100vw);
 `;
 
-const SModalInnerItem = styled.ul`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  background-color: #212121;
-  border-radius: calc(65 / 1920 * 100vw);
+const SModalInnerItem = styled.div`
   width: calc(235 / 375 * 100vw);
-  height: calc(315 / 375 * 100vw);
+  height: calc(313 / 375 * 100vw);
+  border-radius: calc(65 / 1920 * 100vw);
   border: 1px solid #ffffff;
-  overflow: scroll;
   margin: 0 auto;
+  background-color: #212121;
+  padding: 15px 0;
   margin-bottom: calc(30 / 375 * 100vw);
+  ul {
+    display: flex;
+    flex-direction: column;
+    overflow: scroll;
+    height: calc(283 / 375 * 100vw);
+  }
 `;
 
 const SBranchButton = styled.button`
@@ -124,10 +130,12 @@ const SBranchButton = styled.button`
   width: calc(235 / 375 * 100vw);
   height: calc(37 / 375 * 100vw);
   border: none;
-  letter-spacing: 0.5em;
+  letter-spacing: 4.2px;
+  font-size: 14px;
 `;
 const SFont = styled.p`
-  font-size: calc(15 / 375 * 100vw);
+  font-size: 12px;
+  letter-spacing: 1.2px;
   color: #ac966f;
   margin: calc(10 / 375 * 100vw);
 `;

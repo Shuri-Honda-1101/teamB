@@ -2,34 +2,50 @@ import styled from "styled-components";
 
 const AllDinkListItem = ({ drink, id, setPath }) => {
   return (
-    <li>
-      <SItemButton
+    <SItemList>
+      <button
         onClick={() => {
           setPath(id);
         }}
       >
-        {drink}
-      </SItemButton>
-    </li>
+        <p>{drink}</p>
+      </button>
+    </SItemList>
   );
 };
 
-// const SDrinkListItem = styled.li`
-
-// `
-const SItemButton = styled.button`
-  background-color: #212121;
-  height: calc(35 / 375 * 100vw);
-  width: calc(198 / 375 * 100vw);
-  color: #fff;
-  border: none;
-  cursor: pointer;
-  outline: none;
-  padding: 0;
-  appearance: none;
-  border-bottom: 1px solid #414040;
-  :hover {
-    background-color: rgba(255, 255, 255, 0.3);
+const SItemList = styled.li`
+  height: 35px;
+  button {
+    background-color: #212121;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    outline: none;
+    padding: 0;
+    appearance: none;
+    font-size: 11px;
+    position: relative;
+    :before {
+      content: "";
+      position: absolute;
+      left: 50%;
+      bottom: 0;
+      display: inline-block;
+      width: 155px;
+      height: 1px;
+      -webkit-transform: translateX(-50%);
+      transform: translateX(-50%);
+      background-color: #414040;
+    }
+  }
+  p {
+    white-space: nowrap;
+    margin: 7px 0;
+    padding: 0 min(10px, 103px);
+    :hover {
+      background-color: rgba(255, 255, 255, 0.25);
+    }
   }
 `;
 

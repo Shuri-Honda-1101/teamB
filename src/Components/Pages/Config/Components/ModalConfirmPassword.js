@@ -1,6 +1,5 @@
-import { useState, useRef, useContext } from "react";
+import { useRef } from "react";
 import styled from "styled-components";
-import { AuthContext } from "../../../utility/AuthService";
 
 const ModalConfirmPassword = ({ setOpen, onSubmit, setPassword, password }) => {
   const modalRef = useRef(null);

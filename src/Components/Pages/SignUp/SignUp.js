@@ -82,7 +82,8 @@ const SignUp = ({ history }) => {
 const STitle = styled.h1`
   font-size: 17px;
   text-align: center;
-  margin: 90px 0 50px 0;
+  letter-spacing: 2.38px;
+  margin: 84.5px 0 39px 0;
 `;
 const SSignUpWrap = styled.form`
   display: flex;
@@ -91,7 +92,13 @@ const SSignUpWrap = styled.form`
 `;
 const SInput = styled.input`
   width: calc(302 / 375 * 100vw);
-  margin-bottom: calc(25 / 375 * 100vw);
+  margin-bottom: calc(11.5 / 375 * 100vw);
+  padding: 10.5px 0 10.5px 7.5px;
+  ::placeholder {
+    color: #5c5a5a;
+    font-size: 14px;
+    letter-spacing: 1.4px;
+  }
 `;
 const SButton = styled.button`
   display: block;
@@ -102,7 +109,7 @@ const SButton = styled.button`
   border-radius: calc(10 / 375 * 100vw);
   width: calc(302 / 375 * 100vw);
   height: calc(37 / 375 * 100vw);
-  margin-top: calc(20 / 375 * 100vw);
+  margin-top: calc(37.5 / 375 * 100vw);
   line-height: calc(37 / 375 * 100vw);
   font-size: calc(14 / 375 * 100vw);
   letter-spacing: calc(4.2 / 375 * 100vw);
