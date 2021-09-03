@@ -55,7 +55,7 @@ const SModalInner = styled.div`
   background-color: #000;
   height: calc(274 / 375 * 100vw);
   width: calc(315 / 375 * 100vw);
-  border-radius: calc(35 / 375 * 100vw);
+  border-radius: calc(31 / 375 * 100vw);
   border: 1px solid #ac966f;
   padding: 63px 0 59px 0;
 `;
@@ -66,12 +66,19 @@ const SMailForm = styled.form`
   align-items: center;
 `;
 const STitle = styled.h1`
-  font-size: 13px;
+  font-size: calc(13 / 375 * 100vw);
+  letter-spacing: calc(1.3 / 375 * 100vw);
 `;
 const SInput = styled.input`
   width: calc(237 / 375 * 100vw);
   padding-bottom: calc(13.5 / 375 * 100vw);
   margin: calc(37 / 375 * 100vw);
+  ::placeholder {
+    color: #5c5a5a;
+    font-size: 14px;
+    letter-spacing: 1.4px;
+    padding-left: calc(7.2 / 375 * 100vw);
+  }
 `;
 const SButton = styled.button`
   display: block;
@@ -82,6 +89,7 @@ const SButton = styled.button`
   border-radius: calc(10 / 375 * 100vw);
   width: calc(237 / 375 * 100vw);
   height: calc(37 / 375 * 100vw);
+  letter-spacing: calc(1.3 / 375 * 100vw);
 `;
 
 export default ModalForgetPassword;
