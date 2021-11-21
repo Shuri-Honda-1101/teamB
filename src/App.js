@@ -1,36 +1,31 @@
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
-import Edit from "./Components/Pages/Edit/Edit";
-import Item from "./Components/Pages/Item/Item";
-import Catalog from "./Components/Pages/Catalog/Catalog";
-import SignUp from "./Components/Pages/SignUp/SignUp";
-import Login from "./Components/Pages/LogIn/Login";
-import Config from "./Components/Pages/Config";
-import { AuthProvider } from "./Components/utility/AuthService";
-import LoggedInRoute from "./Components/utility/LoggedInRoute";
-import Home from "./Components/Pages/Home/Home";
-import reset from "styled-reset";
 import { createGlobalStyle } from "styled-components";
+import reset from "styled-reset";
 
-const App = () => {
+import { AuthProvider } from "./Components/utility/AuthService";
+
+//Pages
+import { SignUp } from "./Components/Pages/SignUp";
+import { Login } from "./Components/Pages/LogIn";
+import Home from "./Components/Pages/Home";
+
+//Components
+import { Header } from "./Components/utility/Header/Header";
+import { Default } from "./Components/utility/Default/Default";
+import LoggedInRoute from "./Components/utility/LoggedInRoute";
+
+const App = ({ history }) => {
   return (
     <div>
       <AuthProvider>
         <Router>
           <GlobalStyle />
+          <Header />
           <Switch>
-            <LoggedInRoute exact path="/user/:uid" component={Catalog} />
-            <Route exact path="/" component={Home} />
-            <LoggedInRoute exact path="/new" component={Edit} />
-            <LoggedInRoute exact path="/edit/:id" component={Edit} />
-            <LoggedInRoute exact path="/edit/:id/:mid" component={Edit} />
-            <LoggedInRoute
-              exact
-              path="/user/:uid/items/:did"
-              component={Item}
-            />
-            <LoggedInRoute exact path="/config/:uid" component={Config} />
+            <Route exact path="/lp" component={Home} />
             <Route exact path="/signup" component={SignUp} />
             <Route exact path="/login" component={Login} />
+            <LoggedInRoute path="/" component={Default} />
           </Switch>
         </Router>
       </AuthProvider>
@@ -57,7 +52,7 @@ html{
   font-size: 62.5%;
 }
 body{
-  padding: calc(62 / 375 * 100vw) 0 calc(48 / 375 * 100vw) 0;
+  padding: 63px 0 48px 0;
   background-color: #000;
   color: #fff;
   font-family: "Hiragino Kaku Gothic ProN", "ヒラギノ角ゴ ProN W3",
