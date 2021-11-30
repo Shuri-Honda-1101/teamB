@@ -7,7 +7,7 @@ import { AuthProvider } from "./Components/utility/AuthService";
 //Pages
 import { SignUp } from "./Components/Pages/SignUp";
 import { Login } from "./Components/Pages/LogIn";
-import Home from "./Components/Pages/Home";
+import { Home } from "./Components/Pages/Home";
 
 //Components
 import { Header } from "./Components/utility/Header/Header";
